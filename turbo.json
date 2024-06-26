@@ -18,6 +18,9 @@
     },
     "start": {
       "cache": false
+    },
+    "lint": {
+      "dependsOn": ["^lint"]
     }
   }
 }

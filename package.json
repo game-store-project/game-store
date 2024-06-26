@@ -12,10 +12,16 @@
     "build": "turbo build",
     "start": "turbo start",
     "db:generate": "turbo db:generate",
-    "db:migrate": "turbo db:migrate"
+    "db:migrate": "turbo db:migrate",
+    "prepare": "husky"
   },
   "devDependencies": {
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.7",
     "turbo": "^2.0.5",
     "typescript": "^5.4.5"
+  },
+  "lint-staged": {
+    "**/*.{ts,tsx,d.ts}": "turbo lint --"
   }
 }
