@@ -1,0 +1,23 @@
+networks:
+  postgres-network:
+    driver: bridge
+    name: ${POSTGRESQL_DATABASE}-network
+
+volumes:
+  postgres-data:
+    name: ${POSTGRESQL_DATABASE}-data
+
+services:
+  postgres:
+    image: bitnami/postgresql:latest
+    container_name: ${POSTGRESQL_DATABASE}-db
+    networks:
+      - postgres-network
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRESQL_USERNAME=${POSTGRESQL_USERNAME}
+      - POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
+      - POSTGRESQL_DATABASE=${POSTGRESQL_DATABASE}
+    volumes:
+      - postgres-data:/bitnami/postgresql
