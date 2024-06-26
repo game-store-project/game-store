@@ -47,6 +47,7 @@ web_modules/
 
 # TypeScript cache
 *.tsbuildinfo
+next-env.d.ts
 
 # Optional npm cache directory
 .npm
@@ -90,8 +91,8 @@ out
 # Build Outputs
 .next/
 out/
-build
-dist
+build/
+dist/
 
 # Gatsby files
 .cache/
@@ -140,3 +141,7 @@ dist
 # Misc
 .DS_Store
 *.pem
+
+# next.js
+/.next/
+/out/
