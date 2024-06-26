@@ -140,6 +140,3 @@ dist
 # Misc
 .DS_Store
 *.pem
-
-# Uploads folder
-uploads/

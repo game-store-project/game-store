@@ -1,9 +1,23 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "tasks": {
+    "db:generate": {
+      "cache": false
+    },
+    "db:migrate": {
+      "cache": false
+    },
     "dev": {
+      "dependsOn": ["^db:generate", "^db:migrate"],
       "cache": false,
       "persistent": true
+    },
+    "build": {
+      "dependsOn": ["^build"],
+      "cache": false
+    },
+    "start": {
+      "cache": false
     }
   }
 }

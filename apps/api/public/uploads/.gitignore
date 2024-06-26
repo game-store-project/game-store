@@ -1,0 +1,7 @@
+# Ignore all files in the covers folder but preserve folder with .keep file
+covers/*
+!covers/.keep
+
+# Ignore all files in the avatars folder but preserve folder with .keep file
+avatars/*
+!avatars/.keep
