@@ -87,8 +87,10 @@ web_modules/
 .next
 out
 
-# Nuxt.js build / generate output
-.nuxt
+# Build Outputs
+.next/
+out/
+build
 dist
 
 # Gatsby files
@@ -128,3 +130,16 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Turbo
+.turbo
+
+# Vercel
+.vercel
+
+# Misc
+.DS_Store
+*.pem
+
+# Uploads folder
+uploads/

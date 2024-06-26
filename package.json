@@ -1,0 +1,17 @@
+{
+  "name": "game-store",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "packageManager": "pnpm@8.15.6",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "turbo dev"
+  },
+  "devDependencies": {
+    "turbo": "^2.0.5",
+    "typescript": "^5.4.5"
+  }
+}
