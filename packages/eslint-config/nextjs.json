@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json.schemastore.org/eslintrc",
+  "env": {
+    "browser": true
+  },
+  "extends": ["@repo/eslint-config/library.json", "next/core-web-vitals"],
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "rules": {
+    "tailwindcss/no-custom-classname": "off",
+    "@next/next/no-html-link-for-pages": "off"
+  }
+}

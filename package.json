@@ -16,12 +16,17 @@
     "prepare": "husky"
   },
   "devDependencies": {
-    "husky": "^9.0.11",
-    "lint-staged": "^15.2.7",
-    "turbo": "^2.0.5",
-    "typescript": "^5.4.5"
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "husky": "9.0.11",
+    "lint-staged": "15.2.7",
+    "prettier": "3.3.2",
+    "prettier-plugin-tailwindcss": "0.6.5",
+    "turbo": "2.0.5",
+    "typescript": "5.5.2"
   },
   "lint-staged": {
-    "**/*.{ts,tsx,d.ts}": "turbo lint --"
+    "**/*.{ts,tsx,d.ts}": "turbo lint --",
+    "**/*.{json,css,config.*,md}": "prettier --write"
   }
 }
