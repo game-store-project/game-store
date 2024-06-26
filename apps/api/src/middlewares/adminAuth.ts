@@ -16,16 +16,18 @@ export const adminAuth = async (req: Request, res: Response, next: NextFunction)
 
       return next();
     } else return res.status(400).json({ error: 'Not Authorized' });
-  } catch (error: any) {
-    switch (error.message) {
-      case 'jwt must be provided':
-        return res.status(400).json({ error: 'Not Authorized' });
-      case 'jwt expired':
-        return res.status(400).json({ error: 'Invalid Session' });
-      case 'invalid token':
-        return res.status(400).json({ error: 'Not Authorized' });
-      default:
-        return res.status(500).json({ error: 'Internal Server Error' });
+  } catch (error) {
+    if (error && typeof error === 'object' && 'message' in error) {
+      switch (error.message) {
+        case 'jwt must be provided':
+          return res.status(400).json({ error: 'Not Authorized' });
+        case 'jwt expired':
+          return res.status(400).json({ error: 'Invalid Session' });
+        case 'invalid token':
+          return res.status(400).json({ error: 'Not Authorized' });
+        default:
+          return res.status(500).json({ error: 'Internal Server Error' });
+      }
     }
   }
 };

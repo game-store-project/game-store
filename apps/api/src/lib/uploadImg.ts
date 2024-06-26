@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto';
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import { createWriteStream } from 'fs';
 import { resolve } from 'path';
 import { pipeline } from 'stream';
@@ -9,7 +9,7 @@ import stream from 'stream';
 
 const pump = promisify(pipeline);
 
-const uploadImg = async (req: Request, res: Response) => {
+const uploadImg = async (req: Request) => {
   if (req.file) {
     const { originalname, mimetype, buffer } = req.file!;
 

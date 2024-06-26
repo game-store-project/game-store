@@ -11,8 +11,8 @@ export const userAuth = async (req: Request, res: Response, next: NextFunction) 
     req.id = tokenId;
 
     return next();
-  } catch (error: any) {
-    switch (error.message) {
+  } catch (error) {
+    switch (error && typeof error === 'object' && 'message' in error) {
       case 'jwt must be provided':
         return res.status(400).json({ error: 'Not Authorized' });
       case 'jwt expired':

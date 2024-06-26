@@ -1,5 +1,5 @@
 import { isCelebrateError } from 'celebrate';
-import express, { Errback, NextFunction, Request, Response } from 'express';
+import express, { Errback, Request, Response } from 'express';
 
 import cors from 'cors';
 import { router } from './routes';
@@ -13,11 +13,11 @@ app.use(cors({ origin: '*' }));
 
 app.use(router);
 
-app.use((_req, res, _next) => {
+app.use((_req, res) => {
   res.status(404).send('Content not found');
 });
 
-app.use((err: Errback, req: Request, res: Response, next: NextFunction) => {
+app.use((err: Errback, _req: Request, res: Response) => {
   if (isCelebrateError(err)) {
     let message = err.message;
     if (Object.fromEntries(err.details).body) {

@@ -11,6 +11,7 @@
     "dev": "turbo dev",
     "build": "turbo build",
     "start": "turbo start",
+    "lint": "turbo lint",
     "db:generate": "turbo db:generate",
     "db:migrate": "turbo db:migrate",
     "prepare": "husky"

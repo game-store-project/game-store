@@ -71,7 +71,7 @@ export class CartController {
           ? cart_items
           : jwt.sign(
               { id: randomUUID(), cartItems: cartItems },
-              process.env.JWT_SECRET as string
+              process.env.JWT_SECRET as string,
             );
 
         if (!check) {
@@ -107,7 +107,7 @@ export class CartController {
 
           const token = jwt.sign(
             { id: randomUUID(), cartItems: cartItems },
-            process.env.JWT_SECRET as string
+            process.env.JWT_SECRET as string,
           );
 
           await User.update({ where: { id: req.id }, data: { cartItems: token } });
