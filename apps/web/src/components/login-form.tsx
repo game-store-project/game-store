@@ -1,14 +1,45 @@
+'use client';
+
+import { ILogin, loginSchema } from '@/validation/login';
+import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { Button } from './ui/button';
+import { Control, Input } from './ui/input';
+import { Loading } from './ui/loading';
+import { Eye, EyeOff } from 'lucide-react';
 
 export const LoginForm = () => {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<ILogin>({
+    resolver: zodResolver(loginSchema),
+  });
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [isPasswordHidden, setIsPasswordHidden] = useState(true);
+
+  const handleLogin = async (data: ILogin) => {
+    setIsLoading(true);
+
+    setTimeout(() => {
+      console.log(data);
+      setIsLoading(false);
+    }, 2000);
+  };
+
   return (
     <form
       className="bg-background mx-auto flex w-full max-w-lg flex-col gap-9 rounded-2xl p-8 shadow-xl"
       method="POST"
     >
       <div className="flex flex-col items-center gap-2">
-        <Image src="/logo.svg" alt="logo.svg" width={200} height={200} />
+        <Image src="/logo.svg" alt="logo.svg" width={200} height={200} quality={80} />
         <span className="font-alt text-primary text-4xl font-medium">
           GAME<span className="text-foreground">STORE</span>
         </span>
@@ -28,24 +59,62 @@ export const LoginForm = () => {
           </span>
         </div>
 
-        <input
-          type="email"
+        <Input
+          error={errors.email?.message}
           name="email"
-          placeholder="Inserir seu e-mail"
-          className="bg-input ring-border focus-visible:ring-primary rounded-xl px-3 py-3.5 outline-none ring-1 transition-all"
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Inserir sua senha"
-          className="bg-input ring-border focus-visible:ring-primary rounded-xl px-3 py-3.5 outline-none ring-1 transition-all"
-        />
-        <button
-          type="submit"
-          className="bg-primary hover:bg-primary/90 active:bg-primary/80 disabled:bg-primary/70 text-md focus-visible:ring-foreground flex items-center justify-center rounded-xl py-3 font-medium text-purple-50 outline-none transition-all focus-visible:ring-1 active:transition-none"
+          data-error={errors.email?.message ? true : false}
+          data-disabled={isLoading}
+          className="data-[error=true]:ring-destructive data-[error=true]:focus-within:ring-destructive data-[disabled=true]:hover:bg-border/10"
         >
-          Entrar
-        </button>
+          <Control
+            {...register('email')}
+            placeholder="Seu e-mail"
+            type="email"
+            id="email"
+            disabled={isLoading}
+            className="group-data-[error=true]:text-destructive group-data-[error=true]:placeholder:text-destructive"
+            autoComplete="off"
+          />
+        </Input>
+
+        <Input
+          error={errors.password?.message}
+          name="password"
+          data-error={errors.password?.message ? true : false}
+          data-disabled={isLoading}
+          className="data-[error=true]:ring-destructive data-[error=true]:focus-within:ring-destructive data-[disabled=true]:hover:bg-border/10"
+        >
+          <Control
+            {...register('password')}
+            placeholder="Sua senha"
+            type={isPasswordHidden ? 'password' : 'text'}
+            id="password"
+            disabled={isLoading}
+            className="group-data-[error=true]:text-destructive group-data-[error=true]:placeholder:text-destructive rounded-r-none"
+            autoComplete="off"
+          />
+
+          <Button
+            onClick={() => setIsPasswordHidden(!isPasswordHidden)}
+            data-error={errors.password?.message ? true : false}
+            data-enabled={watch('password') ? true : false}
+            className="data-[error=true]:data-[selected=true]:text-destructive data-[error=true]:text-destructive data-[selected=true]:text-primary group-focus-within:data-[error=false]:text-primary mx-1 disabled:hover:bg-transparent data-[enabled=true]:visible"
+            variant="icon"
+            size="icon"
+            type="button"
+            disabled={isLoading}
+          >
+            {isPasswordHidden ? <Eye /> : <EyeOff />}
+          </Button>
+        </Input>
+
+        <Button
+          disabled={Object.keys(errors).length > 0 || isLoading}
+          type="submit"
+          onClick={handleSubmit(handleLogin)}
+        >
+          {isLoading ? <Loading variant="small" size="button" /> : <span>Entrar</span>}
+        </Button>
       </div>
     </form>
   );
