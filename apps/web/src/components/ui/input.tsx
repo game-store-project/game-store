@@ -6,7 +6,7 @@ import { tv, VariantProps } from 'tailwind-variants';
 const input = tv({
   slots: {
     root: 'group flex w-full items-center bg-input outline-none ring-1 ring-border transition-all focus-within:ring-primary',
-    control: 'w-full bg-input p-2 outline-none py-3.5',
+    control: 'w-full bg-input p-2 outline-none py-3.5 placeholder-border',
   },
 
   variants: {
