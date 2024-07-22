@@ -54,7 +54,7 @@ export class GameController {
 
   create = async (req: Request, res: Response) => {
     try {
-      const { title, year, price, description, disponibility, genre } = <IGame>req.body;
+      const { title, year, price, description, disponibility, genre } = req.body;
 
       const game = await Game.findFirst({
         where: { title: { equals: title, mode: 'insensitive' } },
@@ -62,7 +62,7 @@ export class GameController {
 
       if (game) res.status(409).json({ error: 'Title already registered' });
       else {
-        const imageUrl = (await uploadImg(req, res)) as string | undefined;
+        const imageUrl = (await uploadImg(req)) as string | undefined;
 
         if (!imageUrl) return res.status(400).json({ error: 'File cannot be empty' });
         else if (imageUrl === 'error')
@@ -113,7 +113,7 @@ export class GameController {
 
   edit = async (req: Request, res: Response) => {
     try {
-      const { title, year, price, description, disponibility, genre } = <IGame>req.body;
+      const { title, year, price, description, disponibility, genre } = req.body;
       const { id } = req.params;
 
       const nameCheck = await Game.findFirst({
@@ -128,7 +128,7 @@ export class GameController {
         }
 
         const imageUrl = req.file
-          ? ((await uploadImg(req, res)) as string | undefined)
+          ? ((await uploadImg(req)) as string | undefined)
           : idCheck.imageUrl;
 
         if (!imageUrl) return res.status(400).json({ error: 'File cannot be empty' });

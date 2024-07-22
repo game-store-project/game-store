@@ -6,6 +6,10 @@ import { Game } from '../models/Game';
 import { User } from '../models/User';
 import { UserGames } from '../models/UserGames';
 
+interface ICart {
+  id: string;
+}
+
 export class CartController {
   view = async (req: Request, res: Response) => {
     const cart_items = req.cart_items;

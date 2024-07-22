@@ -1,10 +1,13 @@
 'use client';
 
+import { api } from '@/lib/api';
 import { IRegister, registerSchema } from '@/validation/register';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { AxiosError } from 'axios';
 import { Eye, EyeOff } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from './ui/button';
@@ -16,6 +19,7 @@ export const RegisterForm = () => {
     register,
     handleSubmit,
     watch,
+    setError,
     formState: { errors },
   } = useForm<IRegister>({
     resolver: zodResolver(registerSchema),
@@ -27,13 +31,38 @@ export const RegisterForm = () => {
     confirm_password: true,
   });
 
+  const router = useRouter();
+
   const handleRegister = async (data: IRegister) => {
     setIsLoading(true);
 
-    setTimeout(() => {
-      console.log(data);
-      setIsLoading(false);
-    }, 2000);
+    try {
+      await api.post('/users/signup', { ...data });
+
+      alert('Conta criada com sucesso! Você será redirecionado para a página de login.');
+
+      router.push('/login');
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        const errorMessage: string | [] = error.response?.data.error;
+
+        if (errorMessage === 'Username in use') {
+          setError('username', { message: 'Nome de usuário em uso' });
+        }
+
+        if (errorMessage === 'Email in use') {
+          setError('email', { message: 'E-mail em uso' });
+        }
+
+        if (errorMessage === 'Internal server error') {
+          alert(
+            'Ocorreu um erro desconhecido, se o erro persistir tente novamente mais tarde.',
+          );
+        }
+      }
+    }
+
+    setIsLoading(false);
   };
 
   return (

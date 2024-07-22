@@ -27,8 +27,6 @@ router.post(
           .max(40)
           .required(),
         email: Joi.string().email().required(),
-        address: Joi.string().min(1).required(),
-        point: Joi.array().required(),
         password: Joi.string().min(6).required(),
         confirm_password: Joi.string().valid(Joi.ref('password')).required(),
       }),
@@ -52,23 +50,7 @@ router.post(
   uAuth.signIn,
 );
 
-router.get(
-  '/users/account/:username',
-  celebrate(
-    {
-      [Segments.PARAMS]: {
-        username: Joi.string()
-          .pattern(/[A-Za-z0-9_]+/)
-          .min(5)
-          .max(40)
-          .required(),
-      },
-    },
-    { messages },
-  ),
-  userAuth,
-  uAccount.account,
-);
+router.get('/users/account', userAuth, uAccount.account);
 
 router.patch(
   '/users/account/avatar/:id',

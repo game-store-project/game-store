@@ -7,21 +7,27 @@ import { User } from '../models/User';
 export class UserAccountController {
   account = async (req: Request, res: Response) => {
     try {
-      const { username } = req.params;
-
       const user = await User.findFirst({
-        where: { username: { equals: username, mode: 'insensitive' } },
-        select: {
-          games: {
-            select: {
-              game: true,
-            },
-            orderBy: { purchaseDate: 'desc' },
-          },
+        where: { id: req.id },
+        include: {
+          games: true,
         },
       });
 
-      return res.json({ userGames: user?.games });
+      if (user) {
+        return res.json({
+          user: {
+            id: user.id,
+            avatar: user.avatarUrl,
+            username: user.username,
+            email: user.email,
+            isAdmin: user.isAdmin,
+          },
+          cartItems: user.cartItems,
+        });
+      }
+
+      return res.status(404).json({ error: 'Resource not found' });
     } catch (error) {
       return res.sendStatus(500);
     }
@@ -31,7 +37,7 @@ export class UserAccountController {
     try {
       const { id } = req.params;
 
-      const { username, email, password, address, new_password, point } = req.body;
+      const { username, email, password, new_password } = req.body;
 
       const [existingUserByUsername, existingUserByEmail] = await Promise.all([
         User.findFirst({
@@ -60,8 +66,6 @@ export class UserAccountController {
             const altUser = {
               username: username.toLowerCase(),
               email: email.toLowerCase(),
-              address,
-              point,
               password: hash,
             };
 
@@ -70,8 +74,6 @@ export class UserAccountController {
             const altUser = {
               username: username.toLowerCase(),
               email: email.toLowerCase(),
-              address,
-              point,
             };
 
             await User.update({ where: { id }, data: { ...altUser } });
@@ -130,7 +132,7 @@ export class UserAccountController {
       const user = await User.findUnique({ where: { id } });
 
       if (user) {
-        const avatarUrl = (await uploadImg(req, res)) as string | undefined;
+        const avatarUrl = (await uploadImg(req)) as string | undefined;
 
         if (!avatarUrl) return res.status(400).json({ error: 'File cannot be empty' });
 

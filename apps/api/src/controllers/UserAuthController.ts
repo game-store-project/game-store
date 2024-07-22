@@ -6,7 +6,7 @@ import { createTokenJwt } from '../utils/jwtFunctions';
 
 export class UserAuthController {
   signUp = async (req: Request, res: Response) => {
-    const { username, email, password, address, point } = <ISignUp>req.body;
+    const { username, email, password } = req.body;
 
     try {
       const [existingUserByUsername, existingUserByEmail] = await Promise.all([
@@ -29,8 +29,6 @@ export class UserAuthController {
         username,
         email,
         password: hash,
-        address,
-        point,
       };
 
       await User.create({ data: { ...newUser } });
@@ -65,8 +63,8 @@ export class UserAuthController {
             },
             cartItems: userCheck.cartItems,
           });
-        } else return res.status(401).json({ error: 'Invalid password' });
-      } else return res.status(404).json({ error: 'Account not found' });
+        } else return res.status(401).json({ error: 'Invalid credentials' });
+      } else return res.status(401).json({ error: 'Invalid credentials' });
     } catch (error) {
       return res.status(500).json({ error: 'Internal server error' });
     }

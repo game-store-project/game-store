@@ -1,6 +1,8 @@
+import { AuthProvider } from '@/contexts/auth';
 import type { Metadata } from 'next';
 import { Inder, Inter } from 'next/font/google';
 import { ReactNode } from 'react';
+import { Toaster } from 'sonner';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
@@ -8,7 +10,7 @@ const inder = Inder({ weight: '400', subsets: ['latin'], variable: '--font-inder
 
 export const metadata: Metadata = {
   title: 'GameStore',
-  description: 'The GameStore is the best place to buy games!',
+  description: 'A GameStore é o melhor lugar para você comprar seus jogos!',
 };
 
 export default function RootLayout({
@@ -18,7 +20,22 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <body className={`${inter.className} ${inder.variable}`}>{children}</body>
+      <body className={`${inter.className} ${inder.variable}`}>
+        <AuthProvider>
+          <Toaster
+            richColors
+            expand
+            closeButton
+            theme={'dark'}
+            toastOptions={{
+              style: {
+                willChange: 'unset',
+              },
+            }}
+          />
+          {children}
+        </AuthProvider>
+      </body>
     </html>
   );
 }

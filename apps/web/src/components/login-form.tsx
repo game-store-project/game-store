@@ -1,21 +1,29 @@
 'use client';
 
+import { setAuthToken, setCartToken } from '@/actions/headers';
+import { IUser } from '@/dtos/user';
+import { useAuth } from '@/hooks/use-auth';
+import { api } from '@/lib/api';
 import { ILogin, loginSchema } from '@/validation/login';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { AxiosError } from 'axios';
+import { Eye, EyeOff } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { Button } from './ui/button';
 import { Control, Input } from './ui/input';
 import { Loading } from './ui/loading';
-import { Eye, EyeOff } from 'lucide-react';
 
 export const LoginForm = () => {
   const {
     register,
     handleSubmit,
     watch,
+    setError,
     formState: { errors },
   } = useForm<ILogin>({
     resolver: zodResolver(loginSchema),
@@ -24,13 +32,49 @@ export const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isPasswordHidden, setIsPasswordHidden] = useState(true);
 
+  const router = useRouter();
+  const { setUser } = useAuth();
+
   const handleLogin = async (data: ILogin) => {
     setIsLoading(true);
 
-    setTimeout(() => {
-      console.log(data);
-      setIsLoading(false);
-    }, 2000);
+    try {
+      const response = await api.post<{ user: IUser; token: string; cartItems: string }>(
+        '/users/signin',
+        {
+          ...data,
+        },
+      );
+
+      const { user, token, cartItems } = response.data;
+
+      await setAuthToken(token);
+
+      setUser(user);
+
+      if (cartItems) {
+        await setCartToken(cartItems);
+      }
+
+      toast.info('Você entrou na sua conta!');
+
+      router.replace('/');
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        const errorMessage: string | [] = error.response?.data.error;
+
+        if (errorMessage === 'Invalid credentials') {
+          setError('email', { message: 'Credenciais inválidas' });
+          setError('password', { message: 'Credenciais inválidas' });
+        } else {
+          alert(
+            'Ocorreu um erro desconhecido, se o erro persistir tente novamente mais tarde.',
+          );
+        }
+      }
+    }
+
+    setIsLoading(false);
   };
 
   return (

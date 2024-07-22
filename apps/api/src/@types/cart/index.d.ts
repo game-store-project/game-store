@@ -1,3 +1,0 @@
-interface ICart {
-  id: string;
-}
