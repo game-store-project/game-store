@@ -12,7 +12,7 @@
     --popover-foreground: 210 20% 98%;
     --primary: 256 61% 50%;
     --primary-foreground: 210 20% 98%;
-    --secondary: 215 27.9% 16.9%;
+    --secondary: 213 26% 20%;
     --secondary-foreground: 213 26% 20%;
     --muted: 215 27.9% 16.9%;
     --muted-foreground: 217.9 10.6% 64.9%;
@@ -47,5 +47,27 @@
   }
   to {
     transform: translateX(-100%);
+  }
+}
+
+@keyframes menu-show {
+  from {
+    opacity: 0;
+    transform: scale(0.5) translate(10%, -50%);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translate(0, 0);
+  }
+}
+
+@keyframes menu-hide {
+  from {
+    opacity: 1;
+    transform: scale(1) translate(0, 0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.5) translate(10%, -50%);
   }
 }

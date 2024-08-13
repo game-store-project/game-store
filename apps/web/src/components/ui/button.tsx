@@ -17,13 +17,13 @@ export const button = tv({
       danger:
         'bg-destructive font-medium text-red-50 hover:bg-destructive/90 active:bg-destructive/80 disabled:bg-destructive/70',
       toggle:
-        'group rounded-full bg-border/60 hover:bg-border hover:ring-primary focus-visible:ring-primary active:bg-border/80',
+        'group rounded-full bg-secondary/60 hover:bg-secondary hover:ring-primary focus-visible:ring-primary active:bg-secondary/80',
       icon: 'invisible hover:bg-border/45',
     },
     size: {
       default: 'text-md py-3.5',
       minimal: 'p-1.5 text-sm',
-      toggle: 'p-2',
+      toggle: 'p-2.5',
       icon: 'p-1',
     },
   },

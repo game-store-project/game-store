@@ -25,7 +25,6 @@ export class UserAuthController {
 
       const hash = await bcrypt.hash(password, 10);
       const newUser = {
-        avatarUrl: '/assets/avatar-default-icon.png',
         username,
         email,
         password: hash,

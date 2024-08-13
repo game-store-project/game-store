@@ -10,7 +10,7 @@ import { AxiosError } from 'axios';
 import { Eye, EyeOff } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { redirect } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -32,7 +32,6 @@ export const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isPasswordHidden, setIsPasswordHidden] = useState(true);
 
-  const router = useRouter();
   const { setUser } = useAuth();
 
   const handleLogin = async (data: ILogin) => {
@@ -58,7 +57,7 @@ export const LoginForm = () => {
 
       toast.info('Você entrou na sua conta!');
 
-      router.replace('/');
+      redirect('/');
     } catch (error) {
       if (error instanceof AxiosError) {
         const errorMessage: string | [] = error.response?.data.error;
