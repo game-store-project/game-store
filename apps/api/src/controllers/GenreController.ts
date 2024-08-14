@@ -5,7 +5,10 @@ import { Genre } from '../models/Genre';
 export class GenreController {
   read = async (req: Request, res: Response) => {
     try {
-      const genres = await Genre.findMany({ orderBy: { name: 'asc' } });
+      const genres = await Genre.findMany({
+        orderBy: { name: 'asc' },
+        include: { _count: true },
+      });
 
       return res.status(200).json({ genres });
     } catch (error) {

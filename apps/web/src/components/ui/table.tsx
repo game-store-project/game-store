@@ -7,7 +7,10 @@ export function Table(props: TableProps) {
   return (
     <table
       {...props}
-      className={twMerge('w-full border-b-2 border-t-2 text-sm', props.className)}
+      className={twMerge(
+        'border-secondary w-full border-b-2 border-t-2 text-sm',
+        props.className,
+      )}
     />
   );
 }
@@ -36,7 +39,7 @@ export function TableBody(props: TableBodyProps) {
     <tbody
       {...props}
       className={twMerge(
-        '[&_tr:hover]:bg-border/30 [&_tr:last-child]:border-0',
+        '[&_tr:hover]:bg-secondary/10 [&_tr:last-child]:border-0',
         props.className,
       )}
     />
@@ -46,7 +49,12 @@ export function TableBody(props: TableBodyProps) {
 interface TableRowProps extends ComponentProps<'tr'> {}
 
 export function TableRow(props: TableRowProps) {
-  return <tr {...props} className={twMerge('bg-input/20 border-b', props.className)} />;
+  return (
+    <tr
+      {...props}
+      className={twMerge('bg-input/50 border-secondary border-b', props.className)}
+    />
+  );
 }
 
 interface TableCellProps extends ComponentProps<'td'> {}

@@ -15,7 +15,7 @@ export const PopoverMenuTrigger = ({ className, ...props }: PopoverMenuTriggerPr
   return (
     <PopoverMenuPrimitive.Trigger
       className={twMerge(
-        'focus-visible:ring-foreground hover:ring-primary bg-border/60 hover:bg-border active:bg-border/80 group flex items-center justify-center rounded-lg p-2 outline-none transition-all focus-visible:ring-1 active:transition-none',
+        'focus-visible:ring-foreground hover:ring-primary bg-secondary/60 hover:bg-secondary active:bg-secondary/80 group flex items-center justify-center rounded-lg p-2 outline-none transition-all focus-visible:ring-1 active:transition-none',
         className,
       )}
       {...props}

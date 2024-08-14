@@ -58,7 +58,7 @@ export const GamesDashboard = () => {
 
     if (!action) return;
 
-    setIsLoading(false);
+    setIsLoading(true);
 
     try {
       await api.delete(`/games/${id}`);
@@ -92,7 +92,7 @@ export const GamesDashboard = () => {
           <Loading />
         </div>
       ) : (
-        <div className="overflow-x-auto">
+        <div className="max-h-[650px] overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
