@@ -14,13 +14,13 @@ export const userAuth = async (req: Request, res: Response, next: NextFunction) 
   } catch (error) {
     switch (error && typeof error === 'object' && 'message' in error) {
       case 'jwt must be provided':
-        return res.status(400).json({ error: 'Not Authorized' });
+        return res.status(401).json({ error: 'Unauthorized' });
       case 'jwt expired':
-        return res.status(400).json({ error: 'Invalid Session' });
+        return res.status(401).json({ error: 'Unauthorized' });
       case 'invalid token':
-        return res.status(400).json({ error: 'Not Authorized' });
+        return res.status(401).json({ error: 'Unauthorized' });
       default:
-        return res.status(500).json({ error: 'Internal Server Error' });
+        return res.status(500).json({ error: 'Unauthorized' });
     }
   }
 };
