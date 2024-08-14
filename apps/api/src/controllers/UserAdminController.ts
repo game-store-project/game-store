@@ -7,7 +7,12 @@ export class UserAdminController {
       const array = await User.findMany({ orderBy: { username: 'asc' } });
 
       const users = array.map((user) => {
-        return { id: user.id, username: user.username, isAdmin: user.isAdmin };
+        return {
+          id: user.id,
+          username: user.username,
+          isAdmin: user.isAdmin,
+          createdAt: user.createdAt,
+        };
       });
 
       return res.status(200).json({ users });

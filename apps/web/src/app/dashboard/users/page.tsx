@@ -1,4 +1,5 @@
 import { hasAuthToken } from '@/actions/headers';
+import { UsersDashboard } from '@/components/users-dashboard';
 import { notFound } from 'next/navigation';
 
 export default async function Users() {
@@ -8,5 +9,5 @@ export default async function Users() {
     notFound();
   }
 
-  return <p>user 1</p>;
+  return <UsersDashboard />;
 }
