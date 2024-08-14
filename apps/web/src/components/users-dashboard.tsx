@@ -7,6 +7,7 @@ import { AxiosError } from 'axios';
 import dayjs from 'dayjs';
 import { MoreHorizontal, UserPen } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import { Loading } from './ui/loading';
 import {
   PopoverMenu,
@@ -38,7 +39,9 @@ export const UsersDashboard = () => {
       if (error instanceof AxiosError) {
         const errorMessage: string | [] = error.response?.data.error;
 
-        console.log(errorMessage);
+        if (errorMessage === 'Internal server error') {
+          toast.error('Ocorreu um interno no serviço da aplicação.');
+        }
       }
     }
 
@@ -59,14 +62,30 @@ export const UsersDashboard = () => {
     setIsLoading(true);
 
     try {
-      await api.patch(`/users/${id}`, {});
+      const response = await api.patch(`/users/${id}`, {});
+
+      const { username, isAdmin } = response.data.user;
+
+      toast.info(
+        `Cargo do usuário ${username} alterado para ${isAdmin ? 'ADMIN' : 'USER'}.`,
+      );
 
       await fetchUsers();
     } catch (error) {
       if (error instanceof AxiosError) {
         const errorMessage: string | [] = error.response?.data.error;
 
-        console.log(errorMessage);
+        if (errorMessage === 'Not allowed') {
+          toast.error('Você não tem permissão para alterar seu próprio cargo.');
+        }
+
+        if (errorMessage === 'Content not found') {
+          toast.error('Usuário não encontrado.');
+        }
+
+        if (errorMessage === 'Internal server error') {
+          toast.error('Ocorreu um interno no serviço da aplicação.');
+        }
       }
     }
   };

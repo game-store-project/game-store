@@ -65,10 +65,10 @@ export const LoginForm = () => {
         if (errorMessage === 'Invalid credentials') {
           setError('email', { message: 'Credenciais inválidas' });
           setError('password', { message: 'Credenciais inválidas' });
-        } else {
-          alert(
-            'Ocorreu um erro desconhecido, se o erro persistir tente novamente mais tarde.',
-          );
+        }
+
+        if (errorMessage === 'Internal server error') {
+          toast.error('Ocorreu um interno no serviço da aplicação.');
         }
       }
     }

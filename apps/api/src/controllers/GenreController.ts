@@ -24,8 +24,9 @@ export class GenreController {
         where: { name: { equals: name, mode: 'insensitive' } },
       });
 
-      if (genre) return res.status(409).json({ error: 'Genre already registered' });
-      else {
+      if (genre) {
+        return res.status(409).json({ error: 'Genre already registered' });
+      } else {
         const genre = await Genre.create({ data: { name } });
 
         return res.status(201).json({ genreId: genre.id });
@@ -42,7 +43,7 @@ export class GenreController {
       const genre = await Genre.findUnique({ where: { id } });
 
       if (genre) return res.status(200).json({ genre });
-      else return res.status(404).send('Content not found');
+      else return res.status(404).json({ error: 'Content not found' });
     } catch (error) {
       return res.status(500).json({ error: 'Internal server error' });
     }
@@ -68,7 +69,7 @@ export class GenreController {
 
         return res.status(200).json({ info: 'Genre updated' });
       } else {
-        return res.status(404).json({ error: 'Genre not found' });
+        return res.status(404).json({ error: 'Content not found' });
       }
     } catch (error) {
       return res.status(500).json({ error: 'Internal server error' });
@@ -90,7 +91,7 @@ export class GenreController {
         await Genre.delete({ where: { id } });
 
         return res.status(200).json({ info: 'Genre removed' });
-      } else return res.status(404).json({ error: 'Genre not found' });
+      } else return res.status(404).json({ error: 'Content not found' });
     } catch (error) {
       return res.status(500).json({ error: 'Internal server error' });
     }

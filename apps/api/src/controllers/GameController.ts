@@ -46,7 +46,7 @@ export class GameController {
       });
 
       if (game) return res.status(200).json({ game });
-      else return res.status(404).send('Content not found');
+      else return res.status(404).json({ error: 'Content not found' });
     } catch (error) {
       return res.status(500).json({ error: 'Internal server error' });
     }
@@ -153,7 +153,7 @@ export class GameController {
 
         return res.status(200).json({ info: 'Game updated' });
       } else {
-        return res.status(404).json({ error: 'Game not found' });
+        return res.status(404).json({ error: 'Content not found' });
       }
     } catch (error) {
       return res.status(500).json({ error: 'Internal server error' });
@@ -178,7 +178,7 @@ export class GameController {
 
           return res.status(200).json({ info: 'Game removed' });
         } else return res.status(401).json({ error: 'Game bought by an user' });
-      } else return res.status(404).json({ error: 'Game not found' });
+      } else return res.status(404).json({ error: 'Content not found' });
     } catch (error) {
       return res.status(500).json({ error: 'Internal server error' });
     }

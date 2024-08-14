@@ -8,6 +8,7 @@ import dayjs from 'dayjs';
 import { ExternalLink, MoreHorizontal, Plus, SquarePen, Trash } from 'lucide-react';
 import NextLink from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import { Link } from './ui/link';
 import { Loading } from './ui/loading';
 import {
@@ -40,7 +41,9 @@ export const GamesDashboard = () => {
       if (error instanceof AxiosError) {
         const errorMessage: string | [] = error.response?.data.error;
 
-        console.log(errorMessage);
+        if (errorMessage === 'Internal server error') {
+          toast.error('Ocorreu um interno no serviço da aplicação.');
+        }
       }
     }
 
@@ -63,12 +66,24 @@ export const GamesDashboard = () => {
     try {
       await api.delete(`/games/${id}`);
 
+      toast.info('Jogo excluído com sucesso.');
+
       await fetchGames();
     } catch (error) {
       if (error instanceof AxiosError) {
         const errorMessage: string | [] = error.response?.data.error;
 
-        console.log(errorMessage);
+        if (errorMessage === 'Game bought by an user') {
+          toast.error('Este jogo foi comprado por um usuário.');
+        }
+
+        if (errorMessage === 'Content not found') {
+          toast.error('Jogo não encontrado.');
+        }
+
+        if (errorMessage === 'Internal server error') {
+          toast.error('Ocorreu um interno no serviço da aplicação.');
+        }
       }
     }
     setIsLoading(false);

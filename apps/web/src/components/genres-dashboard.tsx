@@ -7,6 +7,7 @@ import { AxiosError } from 'axios';
 import dayjs from 'dayjs';
 import { MoreHorizontal, Plus, SquarePen, Trash } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import { Button } from './ui/button';
 import { Loading } from './ui/loading';
 import {
@@ -39,7 +40,9 @@ export const GenresDashboard = () => {
       if (error instanceof AxiosError) {
         const errorMessage: string | [] = error.response?.data.error;
 
-        console.log(errorMessage);
+        if (errorMessage === 'Internal server error') {
+          toast.error('Ocorreu um interno no serviço da aplicação.');
+        }
       }
     }
 
@@ -67,7 +70,13 @@ export const GenresDashboard = () => {
       if (error instanceof AxiosError) {
         const errorMessage: string | [] = error.response?.data.error;
 
-        console.log(errorMessage);
+        if (errorMessage === 'Genre already registered') {
+          toast.error('O gênero já foi cadastrado.');
+        }
+
+        if (errorMessage === 'Internal server error') {
+          toast.error('Ocorreu um interno no serviço da aplicação.');
+        }
       }
     }
   };
@@ -82,12 +91,24 @@ export const GenresDashboard = () => {
     try {
       await api.put(`/genres/${id}`, { name: value });
 
+      toast.info('Gênero atualizado com sucesso.');
+
       await fetchGenres();
     } catch (error) {
       if (error instanceof AxiosError) {
         const errorMessage: string | [] = error.response?.data.error;
 
-        console.log(errorMessage);
+        if (errorMessage === 'Genre already registered') {
+          toast.error('O gênero já foi cadastrado.');
+        }
+
+        if (errorMessage === 'Content not found') {
+          toast.error('Gênero não encontrado.');
+        }
+
+        if (errorMessage === 'Internal server error') {
+          toast.error('Ocorreu um interno no serviço da aplicação.');
+        }
       }
     }
   };
@@ -102,12 +123,24 @@ export const GenresDashboard = () => {
     try {
       await api.delete(`/genres/${id}`);
 
+      toast.info('Gênero excluído com sucesso.');
+
       await fetchGenres();
     } catch (error) {
       if (error instanceof AxiosError) {
         const errorMessage: string | [] = error.response?.data.error;
 
-        console.log(errorMessage);
+        if (errorMessage === 'Genre registered in a game') {
+          toast.error('O gênero está registrado em um jogo.');
+        }
+
+        if (errorMessage === 'Content not found') {
+          toast.error('Gênero não encontrado.');
+        }
+
+        if (errorMessage === 'Internal server error') {
+          toast.error('Ocorreu um interno no serviço da aplicação.');
+        }
       }
     }
     setIsLoading(false);
