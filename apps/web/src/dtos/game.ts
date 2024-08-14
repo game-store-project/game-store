@@ -1,6 +1,4 @@
-import { IGenre } from './genre';
-
-export type IGame = {
+export interface IGame {
   id: string;
   title: string;
   slug: string;
@@ -10,5 +8,10 @@ export type IGame = {
   description: string;
   disponibility: boolean;
   createdAt: Date;
-  genre: IGenre;
-};
+  genreId: string;
+  genre?: {
+    id: string;
+    name: string;
+    createdAt: Date;
+  };
+}

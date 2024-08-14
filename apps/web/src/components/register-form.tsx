@@ -13,6 +13,7 @@ import { useForm } from 'react-hook-form';
 import { Button } from './ui/button';
 import { Control, Input } from './ui/input';
 import { Loading } from './ui/loading';
+import { toast } from 'sonner';
 
 export const RegisterForm = () => {
   const {
@@ -39,7 +40,7 @@ export const RegisterForm = () => {
     try {
       await api.post('/users/signup', { ...data });
 
-      alert('Conta criada com sucesso! Você será redirecionado para a página de login.');
+      toast.info('Conta criada com sucesso! Faaça login para acessar sua conta.');
 
       router.push('/login');
     } catch (error) {
@@ -55,9 +56,7 @@ export const RegisterForm = () => {
         }
 
         if (errorMessage === 'Internal server error') {
-          alert(
-            'Ocorreu um erro desconhecido, se o erro persistir tente novamente mais tarde.',
-          );
+          toast.error('Ocorreu um interno no serviço da aplicação.');
         }
       }
     }

@@ -112,8 +112,9 @@ export class UserAccountController {
         if (check) {
           await User.delete({ where: { username: user.username } });
 
-          if (!user.avatarUrl.includes('avatar-default-icon'))
+          if (user.avatarUrl) {
             await deleteImg(user.avatarUrl);
+          }
 
           return res.status(200).json({ info: 'Account Deleted' });
         } else return res.status(401).json({ error: 'Password is wrong' });
@@ -141,8 +142,9 @@ export class UserAccountController {
 
         await User.update({ where: { id }, data: { avatarUrl } });
 
-        if (!user.avatarUrl.includes('avatar-default-icon'))
+        if (user.avatarUrl) {
           await deleteImg(user.avatarUrl);
+        }
 
         return res.json({ avatarUrl: avatarUrl });
       }

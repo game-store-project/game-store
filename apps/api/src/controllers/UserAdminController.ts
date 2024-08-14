@@ -7,7 +7,12 @@ export class UserAdminController {
       const array = await User.findMany({ orderBy: { username: 'asc' } });
 
       const users = array.map((user) => {
-        return { id: user.id, username: user.username, isAdmin: user.isAdmin };
+        return {
+          id: user.id,
+          username: user.username,
+          isAdmin: user.isAdmin,
+          createdAt: user.createdAt,
+        };
       });
 
       return res.status(200).json({ users });
@@ -32,11 +37,9 @@ export class UserAdminController {
             user: { username: user.username, isAdmin: !user.isAdmin },
           });
         } else {
-          return res
-            .status(401)
-            .json({ error: `You're not allowed to change your permission` });
+          return res.status(401).json({ error: 'Not allowed' });
         }
-      } else return res.status(404).json({ error: `The user doesn't exist` });
+      } else return res.status(404).json({ error: 'Content not found' });
     } catch (error) {
       return res.status(500).json({ error: 'Internal server error' });
     }

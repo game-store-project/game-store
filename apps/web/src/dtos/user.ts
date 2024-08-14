@@ -4,4 +4,5 @@ export type IUser = {
   username: string;
   email: string;
   isAdmin: boolean;
+  createdAt: Date;
 };

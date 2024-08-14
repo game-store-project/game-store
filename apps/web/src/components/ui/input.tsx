@@ -17,7 +17,7 @@ const input = tv({
       },
       search: {
         root: 'rounded-full',
-        control: 'rounded-full',
+        control: 'rounded-full py-2.5',
       },
       filter: {
         root: 'rounded-full',

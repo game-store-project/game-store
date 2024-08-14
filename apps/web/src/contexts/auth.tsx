@@ -51,11 +51,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
       } catch (error) {
         if (error instanceof AxiosError) {
-          const errorMessage: string | [] = error.response?.data.error;
-
-          if (errorMessage === 'Resource not found') {
-            await removeUserAndToken();
-          }
+          await removeUserAndToken();
         }
       }
     }

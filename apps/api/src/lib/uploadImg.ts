@@ -30,7 +30,7 @@ const uploadImg = async (req: Request) => {
 
         await pump(readStream, writeStream);
 
-        return `/uploads/${directory}${fileName}`;
+        return `uploads/${directory}${fileName}`;
       } catch (error) {
         return 'error';
       }
