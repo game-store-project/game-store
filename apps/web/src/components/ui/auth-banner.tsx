@@ -2,7 +2,7 @@ import Image from 'next/image';
 import { ComponentProps } from 'react';
 import { twMerge } from 'tailwind-merge';
 
-interface DivProps extends ComponentProps<'div'> {}
+interface BannersLinearContainerProps extends ComponentProps<'div'> {}
 
 const BannerImage = ({ path }: { path: string }) => {
   return (
@@ -12,26 +12,35 @@ const BannerImage = ({ path }: { path: string }) => {
       width={457}
       height={282}
       className="h-full w-full"
+      quality={10}
       priority
     />
   );
 };
 
-const BannersLinearContainer = (props: DivProps) => {
+const BannersLinearContainer = (props: BannersLinearContainerProps) => {
   return (
     <div
       {...props}
       className={twMerge(
-        'flex max-h-[calc((100vh-80px-40px)/3)] gap-5 whitespace-nowrap',
+        'flex h-full max-h-[calc((100vh-80px-40px)/3)] shrink gap-5 whitespace-nowrap',
         props.className,
       )}
     />
   );
 };
 
-export const AuthBanner = () => {
+interface AuthBannerProps extends ComponentProps<'div'> {}
+
+export const AuthBanner = (props: AuthBannerProps) => {
   return (
-    <div className="flex flex-col gap-5 overflow-hidden py-10">
+    <div
+      {...props}
+      className={twMerge(
+        'hidden h-screen flex-col gap-5 overflow-hidden py-10 md:flex',
+        props.className,
+      )}
+    >
       <BannersLinearContainer className="animate-[infinite-banner_40000ms_infinite_linear] transition-all">
         <BannerImage path={'/control-ultimate.jpg'} />
         <BannerImage path={'/dmc.webp'} />

@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <body className={`${inter.className} ${inder.variable} mx-32 max-w-screen-xl`}>
+      <body className={`${inter.className} ${inder.variable}`}>
         <AuthProvider>
           <Toaster
             richColors

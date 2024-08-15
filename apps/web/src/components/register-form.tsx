@@ -10,10 +10,10 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { Button } from './ui/button';
 import { Control, Input } from './ui/input';
 import { Loading } from './ui/loading';
-import { toast } from 'sonner';
 
 export const RegisterForm = () => {
   const {
@@ -65,10 +65,7 @@ export const RegisterForm = () => {
   };
 
   return (
-    <form
-      className="bg-background mx-auto flex w-full max-w-lg flex-col gap-9 rounded-2xl p-8 shadow-xl"
-      method="POST"
-    >
+    <form className="bg-background mx-auto flex w-full flex-col gap-9 rounded-2xl p-8 md:max-w-lg md:shadow-xl">
       <div className="flex flex-col items-center gap-2">
         <Image src="/logo.svg" alt="logo.svg" width={200} height={200} quality={80} />
         <span className="font-alt text-primary text-4xl font-medium">

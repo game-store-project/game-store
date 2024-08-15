@@ -19,7 +19,7 @@ export default async function RegisterPage() {
     <main className="relative flex h-screen w-screen items-center">
       <AuthBanner />
 
-      <div className="absolute z-10 flex h-screen w-screen items-center justify-center">
+      <div className="static z-10 flex w-full items-center justify-center md:absolute md:h-screen md:w-screen">
         <RegisterForm />
       </div>
     </main>
