@@ -1,4 +1,5 @@
 import { AuthProvider } from '@/contexts/auth';
+import { CartProvider } from '@/contexts/cart';
 import type { Metadata } from 'next';
 import { Inder, Inter } from 'next/font/google';
 import { ReactNode } from 'react';
@@ -22,18 +23,20 @@ export default function RootLayout({
     <html lang="pt-BR">
       <body className={`${inter.className} ${inder.variable}`}>
         <AuthProvider>
-          <Toaster
-            richColors
-            expand
-            closeButton
-            theme={'dark'}
-            toastOptions={{
-              style: {
-                willChange: 'unset',
-              },
-            }}
-          />
-          {children}
+          <CartProvider>
+            <Toaster
+              richColors
+              expand
+              closeButton
+              theme={'dark'}
+              toastOptions={{
+                style: {
+                  willChange: 'unset',
+                },
+              }}
+            />
+            {children}
+          </CartProvider>
         </AuthProvider>
       </body>
     </html>

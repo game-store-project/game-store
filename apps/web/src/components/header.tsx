@@ -1,6 +1,7 @@
 'use client';
 
 import { useAuth } from '@/hooks/use-auth';
+import { useCart } from '@/hooks/use-cart';
 import {
   Cog,
   LogIn,
@@ -30,6 +31,7 @@ export const Header = () => {
   const [searchBar, setSearchBar] = useState(false);
 
   const { user, removeUserAndToken } = useAuth();
+  const { cartItems, setCartItems } = useCart();
 
   const controlRef = useRef<HTMLInputElement>(null);
 
@@ -54,6 +56,8 @@ export const Header = () => {
 
   const handleSignOut = async () => {
     await removeUserAndToken();
+    setCartItems([]);
+
     toast.info('Você saiu da sua conta!');
   };
 
@@ -128,10 +132,13 @@ export const Header = () => {
             <SearchIcon className="text-foreground transition-all" />
           </Button>
 
-          <Button variant="toggle" size="toggle">
-            <Link href="/cart" title="Carrinho de compras">
+          <Button variant="toggle" size="toggle" className="relative">
+            <Link href="/cart" title="Carrinho de compras" className="relative">
               <ShoppingCart className="text-foreground transition-all" />
             </Link>
+            <div className="bg-destructive absolute bottom-0 right-0 -mb-1 -mr-1 flex size-5 items-center justify-center rounded-full">
+              <span className="text-xs font-bold text-white">{cartItems.length}</span>
+            </div>
           </Button>
 
           {!user?.id ? (

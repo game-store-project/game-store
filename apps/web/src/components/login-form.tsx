@@ -3,6 +3,7 @@
 import { setAuthToken, setCartToken } from '@/actions/headers';
 import { IUser } from '@/dtos/user';
 import { useAuth } from '@/hooks/use-auth';
+import { useCart } from '@/hooks/use-cart';
 import { api } from '@/lib/api';
 import { ILogin, loginSchema } from '@/validation/login';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -33,6 +34,7 @@ export const LoginForm = () => {
   const [isPasswordHidden, setIsPasswordHidden] = useState(true);
 
   const { setUser } = useAuth();
+  const { loadCartData, cartItems } = useCart();
 
   const handleLogin = async (data: ILogin) => {
     setIsLoading(true);
@@ -45,14 +47,19 @@ export const LoginForm = () => {
         },
       );
 
-      const { user, token, cartItems } = response.data;
+      const { user, token, cartItems: cartToken } = response.data;
 
       await setAuthToken(token);
 
       setUser(user);
 
-      if (cartItems) {
-        await setCartToken(cartItems);
+      if (cartToken) {
+        await setCartToken(cartToken);
+        await loadCartData();
+      } else {
+        if (cartItems.length > 0) {
+          await api.post('/cart/sync', {});
+        }
       }
 
       toast.info('Você entrou na sua conta!');

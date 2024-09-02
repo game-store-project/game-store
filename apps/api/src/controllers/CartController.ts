@@ -79,13 +79,15 @@ export class CartController {
             );
 
         if (!check) {
-          await User.update({ where: { id: req.id }, data: { cartItems: token } });
+          if (req.id) {
+            await User.update({ where: { id: req.id }, data: { cartItems: token } });
+          }
         }
 
-        return res.status(check ? 401 : 201).json({
+        return res.status(check ? 400 : 201).json({
           info: !check ? message : undefined,
           error: check ? message : undefined,
-          cart_items: token,
+          cartItems: token,
         });
       } else {
         return res.status(404).json({
@@ -93,6 +95,7 @@ export class CartController {
         });
       }
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ error: 'Internal server error' });
     }
   };
@@ -114,11 +117,14 @@ export class CartController {
             process.env.JWT_SECRET as string,
           );
 
-          await User.update({ where: { id: req.id }, data: { cartItems: token } });
+          if (req.id) {
+            await User.update({ where: { id: req.id }, data: { cartItems: token } });
+          }
 
-          return res
-            .status(200)
-            .json({ info: 'Item removed to the cart', cart_items: token });
+          return res.status(200).json({
+            info: 'Item removed to the cart',
+            cartItems: token,
+          });
         } else return res.status(404).json({ error: 'The game not exists on the cart' });
       }
     } catch (error) {
@@ -127,7 +133,7 @@ export class CartController {
   };
 
   buy = async (req: Request, res: Response) => {
-    const cart_items = req.cart_items as string;
+    const cart_items = req.cart_items;
 
     try {
       const errorTitles: string[] = [];
@@ -165,6 +171,16 @@ export class CartController {
       } else {
         return res.status(201).json({ info: 'Titles added' });
       }
+    } catch (error) {
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  };
+
+  sync = async (req: Request, res: Response) => {
+    try {
+      await User.update({ where: { id: req.id }, data: { cartItems: req.cart_items } });
+
+      return res.status(201).json({ info: 'Cart synced' });
     } catch (error) {
       return res.status(500).json({ error: 'Internal server error' });
     }

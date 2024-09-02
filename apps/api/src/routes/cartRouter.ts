@@ -11,6 +11,8 @@ const router = Router();
 
 router.get('/cart', setCartItems, cart.view);
 
+router.post('/cart/sync', userAuth, setCartItems, cart.sync);
+
 router.put(
   '/cart/:id',
   celebrate(

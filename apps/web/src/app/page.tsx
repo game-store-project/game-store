@@ -5,12 +5,10 @@ import { Main } from '@/components/main';
 
 export default function HomePage() {
   return (
-    <div className="flex h-screen flex-col">
-      <Main>
-        <Header />
-        <Home />
-        <Footer />
-      </Main>
-    </div>
+    <Main>
+      <Header />
+      <Home />
+      <Footer />
+    </Main>
   );
 }

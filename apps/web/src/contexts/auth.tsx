@@ -1,6 +1,11 @@
 'use client';
 
-import { deleteAuthToken, hasAuthToken, setCartToken } from '@/actions/headers';
+import {
+  deleteAuthToken,
+  deleteCartItems,
+  hasAuthToken,
+  setCartToken,
+} from '@/actions/headers';
 import { api } from '@/lib/api';
 import { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
@@ -26,6 +31,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsLoadingUserData(true);
 
     await deleteAuthToken();
+    await deleteCartItems();
     setUser({} as IUser);
 
     router.push('/');
