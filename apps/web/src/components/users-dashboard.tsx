@@ -91,11 +91,9 @@ export const UsersDashboard = () => {
   };
 
   return (
-    <main className="mx-auto flex size-full max-w-[1400px] flex-1 flex-col space-y-5 px-6 py-8">
+    <main className="mx-auto flex size-full max-w-[1260px] flex-1 flex-col space-y-5 px-6 py-8">
       <div className="flex items-center gap-3">
         <h1 className="text-2xl font-bold">USUÁRIOS</h1>
-
-        <hr className="bg-border h-5 w-0.5" />
       </div>
 
       {isLoading ? (

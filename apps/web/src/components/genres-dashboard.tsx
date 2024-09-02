@@ -147,7 +147,7 @@ export const GenresDashboard = () => {
   };
 
   return (
-    <main className="mx-auto flex size-full max-w-[1400px] flex-1 flex-col space-y-5 px-6 py-8">
+    <main className="mx-auto flex size-full max-w-[1260px] flex-1 flex-col space-y-5 px-6 py-8">
       <div className="flex items-center gap-3">
         <h1 className="text-2xl font-bold">GÊNEROS</h1>
 

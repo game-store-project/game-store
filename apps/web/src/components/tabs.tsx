@@ -9,7 +9,7 @@ export function Tabs() {
 
   return (
     <div>
-      <nav className="mx-auto flex max-w-[1400px] items-center justify-center gap-2 overflow-x-auto px-6 py-4 sm:justify-normal">
+      <nav className="mx-auto flex max-w-[1260px] items-center justify-center gap-2 overflow-x-auto px-6 py-4 sm:justify-normal">
         <Link
           title="Jogos"
           href="/dashboard/games"

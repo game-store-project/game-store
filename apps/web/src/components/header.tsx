@@ -65,7 +65,7 @@ export const Header = () => {
 
   return (
     <header className="border-border border-b">
-      <div className="mx-auto flex w-full max-w-[1400px] items-center justify-between gap-4 px-6 py-3">
+      <div className="mx-auto flex w-full max-w-[1260px] items-center justify-between gap-4 px-6 py-3">
         <Link
           href="/"
           title="Página inicial"

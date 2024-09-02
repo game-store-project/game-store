@@ -4,15 +4,54 @@ import slugify from 'slugify';
 import { deleteImg } from '../lib/deleteImg';
 import { uploadImg } from '../lib/uploadImg';
 import { Game } from '../models/Game';
+import { UserGames } from '../models/UserGames';
+import {
+  getBestSellers,
+  getHighlights,
+  getNewReleases,
+  getRecomendedGames,
+} from '../utils/gamesFunctions';
 
 export class GameController {
-  index = async (req: Request, res: Response) => {
+  recommendations = async (req: Request, res: Response) => {
     try {
-      const games = await Game.findMany({
-        orderBy: [{ disponibility: 'desc' }, { price: 'asc' }],
+      const rug = await UserGames.findMany({
+        include: { game: true },
+        orderBy: { purchaseDate: 'desc' },
+        where: {
+          game: {
+            disponibility: true,
+          },
+        },
       });
 
-      return res.status(200).json({ games });
+      rug.map((ug) => {
+        if (rug.filter((r) => r.gameId === ug.gameId).length > 1) {
+          rug.splice(rug.indexOf(ug), 1);
+        }
+      });
+
+      const recommended = rug.map((ug) => ug.game);
+
+      return res.status(200).json({ recommended });
+    } catch (error) {
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  };
+
+  index = async (req: Request, res: Response) => {
+    try {
+      const highlights = await getHighlights();
+      const newReleases = await getNewReleases(6);
+      const recommended = await getRecomendedGames(6);
+      const bestSellers = await getBestSellers(6);
+
+      return res.status(200).json({
+        highlights,
+        newReleases,
+        recommended,
+        bestSellers,
+      });
     } catch (error) {
       return res.status(500).json({ error: 'Internal server error' });
     }
@@ -70,7 +109,7 @@ export class GameController {
         else {
           const newGame = {
             title,
-            slug: slugify(title),
+            slug: slugify(title).toLowerCase(),
             year,
             price,
             imageUrl,

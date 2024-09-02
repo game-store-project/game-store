@@ -3,6 +3,7 @@
 import { IGame } from '@/dtos/game';
 import { useAuth } from '@/hooks/use-auth';
 import { api } from '@/lib/api';
+import { formatPrice } from '@/utils/price';
 import { AxiosError } from 'axios';
 import dayjs from 'dayjs';
 import { ExternalLink, MoreHorizontal, Plus, SquarePen, Trash } from 'lucide-react';
@@ -90,7 +91,7 @@ export const GamesDashboard = () => {
   };
 
   return (
-    <main className="mx-auto flex size-full max-w-[1400px] flex-1 flex-col space-y-5 px-6 py-8">
+    <main className="mx-auto flex size-full max-w-[1260px] flex-1 flex-col space-y-5 px-6 py-8">
       <div className="flex items-center gap-3">
         <h1 className="text-2xl font-bold">JOGOS</h1>
 
@@ -132,12 +133,7 @@ export const GamesDashboard = () => {
                       </div>
                     </TableCell>
                     <TableCell>{game.year}</TableCell>
-                    <TableCell>
-                      {Intl.NumberFormat('pt-BR', {
-                        style: 'currency',
-                        currency: 'BRL',
-                      }).format(game.price)}
-                    </TableCell>
+                    <TableCell>{formatPrice(game.price)}</TableCell>
                     <TableCell>
                       <span
                         className="rounded-full bg-yellow-950/70 px-2 py-1 text-yellow-400 data-[public=true]:bg-emerald-950/70 data-[public=true]:text-emerald-400"
@@ -156,14 +152,14 @@ export const GamesDashboard = () => {
 
                         <PopoverMenuContent>
                           <PopoverMenuItem asChild>
-                            <NextLink href={`/dashboard/games/${game.slug}`}>
+                            <NextLink href={`/${game.slug}`}>
                               <ExternalLink className="size-4" />
                               Visualizar
                             </NextLink>
                           </PopoverMenuItem>
 
                           <PopoverMenuItem asChild>
-                            <NextLink href={`/dashboard/posts/editor/${game.id}`}>
+                            <NextLink href={`/dashboard/games/editor/${game.id}`}>
                               <SquarePen className="size-4" />
                               Editar
                             </NextLink>

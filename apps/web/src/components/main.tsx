@@ -15,5 +15,5 @@ export const Main = ({ children }: { children: ReactNode }) => {
     );
   }
 
-  return <div className="flex h-screen flex-col">{children}</div>;
+  return <main className="flex h-screen flex-col">{children}</main>;
 };
