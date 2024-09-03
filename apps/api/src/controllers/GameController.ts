@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
 import slugify from 'slugify';
 
+import { Game as IGame } from '@prisma/client';
 import { deleteImg } from '../lib/deleteImg';
 import { uploadImg } from '../lib/uploadImg';
 import { Game } from '../models/Game';
-import { UserGames } from '../models/UserGames';
 import {
   getBestSellers,
   getHighlights,
@@ -12,39 +12,18 @@ import {
   getRecomendedGames,
 } from '../utils/gamesFunctions';
 
+interface ISearch {
+  search?: string;
+  filter?: string;
+}
+
 export class GameController {
-  recommendations = async (req: Request, res: Response) => {
-    try {
-      const rug = await UserGames.findMany({
-        include: { game: true },
-        orderBy: { purchaseDate: 'desc' },
-        where: {
-          game: {
-            disponibility: true,
-          },
-        },
-      });
-
-      rug.map((ug) => {
-        if (rug.filter((r) => r.gameId === ug.gameId).length > 1) {
-          rug.splice(rug.indexOf(ug), 1);
-        }
-      });
-
-      const recommended = rug.map((ug) => ug.game);
-
-      return res.status(200).json({ recommended });
-    } catch (error) {
-      return res.status(500).json({ error: 'Internal server error' });
-    }
-  };
-
   index = async (req: Request, res: Response) => {
     try {
       const highlights = await getHighlights();
-      const newReleases = await getNewReleases(6);
-      const recommended = await getRecomendedGames(6);
-      const bestSellers = await getBestSellers(6);
+      const newReleases = await getNewReleases({ max: 6 });
+      const recommended = await getRecomendedGames({ max: 6 });
+      const bestSellers = await getBestSellers({ max: 6 });
 
       return res.status(200).json({
         highlights,
@@ -128,23 +107,27 @@ export class GameController {
   };
 
   search = async (req: Request, res: Response) => {
+    const { search, filter } = <ISearch>req.query;
+
+    let result: IGame[] = [];
+
     try {
-      const { name, genre } = req.query;
-
-      if (name && name !== '') {
-        const games = await Game.findMany({
-          where: { title: { contains: `${name}`, mode: 'insensitive' } },
-          orderBy: [{ disponibility: 'desc' }, { price: 'asc' }],
-        });
-
-        return res.status(200).json({
-          games: genre ? games.filter((game) => game.genreId == genre) : games,
-        });
-      } else if (genre && genre !== '') {
-        const games = await Game.findMany({ where: { genreId: genre as string } });
-
-        return res.status(200).json({ games });
-      } else return res.status(400).json({ error: 'Query cannot be empty' });
+      switch (filter) {
+        case 'new-releases':
+          result = await getNewReleases({ search });
+          break;
+        case 'recommended':
+          result = await getRecomendedGames({ search });
+          break;
+        case 'best-sellers':
+          result = await getBestSellers({ search });
+          break;
+        default:
+          result = await Game.findMany({
+            where: { title: { contains: search, mode: 'insensitive' } },
+          });
+      }
+      return res.status(200).json({ games: result });
     } catch (error) {
       return res.status(500).json({ error: 'Internal server error' });
     }

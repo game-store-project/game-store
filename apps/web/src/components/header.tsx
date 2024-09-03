@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { useDebouncedCallback } from 'use-debounce';
@@ -36,7 +36,6 @@ export const Header = () => {
   const controlRef = useRef<HTMLInputElement>(null);
 
   const searchParams = useSearchParams();
-  const pathname = usePathname();
   const router = useRouter();
 
   const setParams = (query: string) => {
@@ -46,7 +45,7 @@ export const Header = () => {
       params.set('search', query);
     } else params.delete('search');
 
-    router.replace(`${pathname}?${params.toString()}`);
+    router.replace(`/results?${params.toString()}`);
   };
 
   const handleSearch = useDebouncedCallback((event: ChangeEvent<HTMLInputElement>) => {

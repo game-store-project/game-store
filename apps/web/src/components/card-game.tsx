@@ -24,7 +24,7 @@ export const CardGame = ({
 
   return (
     <Link
-      className="bg-secondary flex min-w-[192px] flex-col gap-2 rounded-xl pb-4"
+      className="bg-secondary flex max-w-[157px] flex-col gap-2 rounded-xl pb-4 md:max-w-[192px]"
       href={`/${slug}`}
     >
       <Image

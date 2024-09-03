@@ -6,7 +6,7 @@ import { useCart } from '@/hooks/use-cart';
 import { api } from '@/lib/api';
 import { formatPrice } from '@/utils/price';
 import { AxiosError } from 'axios';
-import { ShoppingCart } from 'lucide-react';
+import { ChevronRight, ShoppingCart } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { RefObject, useCallback, useEffect, useRef, useState } from 'react';
@@ -117,7 +117,7 @@ export const Home = () => {
 
   if (isLoading) {
     return (
-      <div className="flex flex-1">
+      <div className="flex h-full">
         <Loading />;
       </div>
     );
@@ -177,7 +177,13 @@ export const Home = () => {
         </div>
       </div>
       <div>
-        <h1 className="mx-6 text-xl">NOVOS LANÇAMENTOS {'>'}</h1>
+        <Link
+          className="mx-6 flex items-center text-xl transition-all hover:underline"
+          href="/results?filter=new-releases"
+        >
+          NOVOS LANÇAMENTOS
+          <ChevronRight className="size-6" />
+        </Link>
         <div className="relative mt-2 flex items-center">
           <button
             className="absolute left-0 z-10 rounded-r-full bg-black/70 px-1 py-6 shadow-black transition-all duration-300 hover:bg-black/90 hover:px-3 hover:shadow-lg min-[1260px]:hidden"
@@ -207,7 +213,13 @@ export const Home = () => {
         </div>
       </div>
       <div>
-        <h1 className="mx-6 text-xl">RECOMENDADOS PARA VOCÊ {'>'}</h1>
+        <Link
+          className="mx-6 flex items-center text-xl transition-all hover:underline"
+          href="/results?filter=recommended"
+        >
+          RECOMENDADOS PARA VOCÊ
+          <ChevronRight className="size-6" />
+        </Link>
         <div className="relative mt-2 flex items-center">
           <button
             className="absolute left-0 z-10 rounded-r-full bg-black/70 px-1 py-6 shadow-black transition-all duration-300 hover:bg-black/90 hover:px-3 hover:shadow-lg min-[1260px]:hidden"
@@ -237,7 +249,13 @@ export const Home = () => {
         </div>
       </div>
       <div>
-        <h1 className="mx-6 text-xl">MAIS VENDIDOS {'>'}</h1>
+        <Link
+          className="mx-6 flex items-center text-xl transition-all hover:underline"
+          href="/results?filter=best-sellers"
+        >
+          MAIS VENDIDOS
+          <ChevronRight className="size-6" />
+        </Link>
         <div className="relative mt-2 flex items-center">
           <button
             className="absolute left-0 z-10 rounded-r-full bg-black/70 px-1 py-6 shadow-black transition-all duration-300 hover:bg-black/90 hover:px-3 hover:shadow-lg min-[1260px]:hidden"

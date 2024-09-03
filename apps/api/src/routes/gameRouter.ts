@@ -16,8 +16,8 @@ router.get(
   celebrate(
     {
       [Segments.QUERY]: Joi.object().keys({
-        name: Joi.string().min(0),
-        genre: Joi.number().integer(),
+        search: Joi.string().min(0),
+        filter: Joi.string().min(0),
       }),
     },
     {

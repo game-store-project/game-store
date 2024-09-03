@@ -1,10 +1,15 @@
 import { Game } from '../models/Game';
 import { UserGames } from '../models/UserGames';
 
+interface ISearch {
+  max?: number;
+  search?: string;
+}
+
 export const getHighlights = async () => {
-  const newReleases = await getNewReleases(4);
-  const recommended = await getRecomendedGames(4);
-  const bestSellers = await getBestSellers(4);
+  const newReleases = await getNewReleases({ max: 4 });
+  const recommended = await getRecomendedGames({ max: 4 });
+  const bestSellers = await getBestSellers({ max: 4 });
 
   const uniqueOcurrences = new Map();
 
@@ -33,11 +38,12 @@ export const getHighlights = async () => {
   return highlights;
 };
 
-export const getNewReleases = async (max: number | undefined) => {
+export const getNewReleases = async ({ max, search }: ISearch) => {
   const newReleases = await Game.findMany({
     orderBy: [{ createdAt: 'desc' }],
     where: {
       disponibility: true,
+      title: { contains: search, mode: 'insensitive' },
     },
     take: max,
   });
@@ -45,13 +51,14 @@ export const getNewReleases = async (max: number | undefined) => {
   return newReleases;
 };
 
-export const getRecomendedGames = async (max: number | undefined) => {
+export const getRecomendedGames = async ({ max, search }: ISearch) => {
   const rug = await UserGames.findMany({
     include: { game: true },
     orderBy: { purchaseDate: 'desc' },
     where: {
       game: {
         disponibility: true,
+        title: { contains: search, mode: 'insensitive' },
       },
     },
     take: max ? max * 2 : undefined,
@@ -74,7 +81,7 @@ export const getRecomendedGames = async (max: number | undefined) => {
   return recommended.map((ug) => ug.game);
 };
 
-export const getBestSellers = async (max: number | undefined) => {
+export const getBestSellers = async ({ max, search }: ISearch) => {
   const bestSellers = await Game.findMany({
     include: {
       _count: {
@@ -89,6 +96,7 @@ export const getBestSellers = async (max: number | undefined) => {
     },
     where: {
       disponibility: true,
+      title: { contains: search, mode: 'insensitive' },
     },
     take: max,
   });
