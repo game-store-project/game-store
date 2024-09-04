@@ -86,7 +86,10 @@ export const Results = ({ searchParams }: ResultsProps) => {
     <main className="mx-auto mt-8 w-full max-w-[1260px] space-y-24 pb-8">
       <div className="px-6">
         <h1 className="text-xl">Resultados para a busca e filtragem</h1>
-        <div className="mt-2 flex flex-wrap justify-center gap-3">
+        <div
+          className="mt-2 flex flex-wrap justify-center gap-3 data-[length=true]:justify-stretch sm:justify-stretch"
+          data-length={games?.length <= 1}
+        >
           {games.map((game) => (
             <CardGame
               key={game.id}

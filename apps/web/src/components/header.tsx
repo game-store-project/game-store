@@ -98,6 +98,8 @@ export const Header = () => {
             className="data-[searchbar=open]:bg-background data-[searchbar=open]:ring-0"
             data-searchbar={searchBar ? 'open' : 'closed'}
           >
+            <Search className="group-focus-within:text-primary text-border mr-3 size-6 cursor-pointer transition-all" />
+
             <Control
               ref={controlRef}
               type="search"
@@ -112,8 +114,6 @@ export const Header = () => {
               placeholder="Pesquisar..."
               className="data-[searchbar=open]:bg-background ml-1.5"
             />
-
-            <Search className="group-focus-within:text-primary text-border mr-3 size-6 cursor-pointer transition-all" />
           </Input>
         </div>
 

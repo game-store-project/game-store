@@ -127,7 +127,7 @@ export const Home = () => {
     <main className="mx-auto mt-8 w-full max-w-[1260px] space-y-24">
       <div className="px-6">
         <h1 className="text-xl">EM DESTAQUE</h1>
-        <div className="mt-2 flex flex-wrap justify-center gap-10">
+        <div className="mt-2 flex flex-wrap justify-center gap-3 xl:gap-10">
           <div className="relative">
             <Link href={`/${games.highlights[currentIndex]?.slug}`}>
               <Image
