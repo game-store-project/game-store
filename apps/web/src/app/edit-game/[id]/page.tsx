@@ -4,17 +4,17 @@ import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Button } from '../../components/ui/button';
-import { Input, Control, ControlSelect } from '../../components/ui/input';
-import { Loading } from '../../components/ui/loading';
+import { Button } from '../../../components/ui/button';
+import { Input, Control, ControlSelect } from '../../../components/ui/input';
+import { Loading } from '../../../components/ui/loading';
 import { api } from '@/lib/api';
 import { Main } from '@/components/main';
 import { Header } from '@/components/header';
 import { notFound, useRouter } from 'next/navigation';
 import { hasAuthToken } from '@/actions/headers';
 import { IGenre } from '@/dtos/genre';
-import { toast } from 'sonner';
 import { AxiosError } from 'axios';
+import { toast } from 'sonner';
 
 const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 
@@ -44,7 +44,8 @@ const schema = z.object({
 
 type FormValues = z.infer<typeof schema>;
 
-export default function NewGamePage() {
+export default function NewGamePage({ params }: { params: { id: string } }) {
+  const [initialData, setInitialData] = useState();
   const validateAuthToken = async () => {
     const authToken = await hasAuthToken();
 
@@ -53,12 +54,17 @@ export default function NewGamePage() {
     }
   };
 
-  useEffect(() => {
-    validateAuthToken();
-    fetchGenres();
-  }, [fetchGenres]);
-
   const router = useRouter();
+
+  const getGameData = async () => {
+    try {
+      const initialData = await api.get(`/games/${params.id}`);
+      setInitialData(initialData);
+    } catch (error) {
+      console.error('Erro ao enviar os dados', error);
+      router.push('/dashboard/games');
+    }
+  };
 
   const {
     register,
@@ -66,6 +72,7 @@ export default function NewGamePage() {
     formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
+    defaultValues: initialData,
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -74,7 +81,7 @@ export default function NewGamePage() {
   const onSubmit = (data: FormValues) => {
     setIsLoading(true);
     try {
-      api.post('/games', data);
+      api.put(`/games/${params.id}`, data);
     } catch (error) {
       console.error('Erro ao enviar os dados', error);
     }
@@ -100,6 +107,12 @@ export default function NewGamePage() {
       }
     }
   }, []);
+
+  useEffect(() => {
+    validateAuthToken();
+    getGameData();
+    fetchGenres();
+  }, [fetchGenres, getGameData]);
 
   return (
     <Main>
@@ -216,9 +229,6 @@ export default function NewGamePage() {
               className="group-data-[error=true]:text-destructive group-data-[error=true]:placeholder:text-destructive"
               autoComplete="off"
             >
-              <option selected disabled>
-                Selecione Gênero do jogo
-              </option>
               {genres?.map((genre) => {
                 return (
                   <option key={genre.id} value={genre.name}>

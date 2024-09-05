@@ -60,10 +60,30 @@ const Control = forwardRef<HTMLInputElement, ControlProps>(
     const { variant } = useContext(inputContext);
     const { control } = input({ variant });
 
+    if (props.type === 'textarea') {
+      return (
+        <textarea rows={4} className={control({ className })} {...props} ref={ref} />
+      );
+    }
+
     return <input className={control({ className })} {...props} ref={ref} />;
   },
 );
 
-Control.displayName = 'Control';
+const ControlSelect = forwardRef<HTMLInputElement, ControlProps>(
+  ({ className, children, ...props }, ref) => {
+    const { variant } = useContext(inputContext);
+    const { control } = input({ variant });
 
-export { Control };
+    return (
+      <select className={control({ className })} {...props} ref={ref}>
+        {children}
+      </select>
+    );
+  },
+);
+
+Control.displayName = 'Control';
+ControlSelect.displayName = 'Control';
+
+export { Control, ControlSelect };

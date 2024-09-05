@@ -51,13 +51,12 @@ export class GameController {
 
   find = async (req: Request, res: Response) => {
     try {
-      const { slug } = req.params;
+      const { id } = req.params;
 
       const game = await Game.findFirst({
         where: {
-          slug: {
-            equals: slug,
-            mode: 'insensitive',
+          id: {
+            equals: id,
           },
         },
         include: { genre: true },
