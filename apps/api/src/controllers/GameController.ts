@@ -49,7 +49,7 @@ export class GameController {
     }
   };
 
-  find = async (req: Request, res: Response) => {
+  getBySlug = async (req: Request, res: Response) => {
     try {
       const { slug } = req.params;
 
@@ -58,6 +58,33 @@ export class GameController {
           slug: {
             equals: slug,
           },
+          disponibility: true,
+        },
+        select: {
+          id: true,
+          title: true,
+          year: true,
+          price: true,
+          imageUrl: true,
+          description: true,
+          genre: true,
+        },
+      });
+
+      if (game) return res.status(200).json({ game });
+      else return res.status(404).json({ error: 'Content not found' });
+    } catch (error) {
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  };
+
+  getById = async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+
+      const game = await Game.findFirst({
+        where: {
+          id,
         },
         include: { genre: true },
       });

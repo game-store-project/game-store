@@ -24,20 +24,19 @@ export const Game = ({ params }: GameParams) => {
       const response = await api.get<{ game: IGame }>(`/games/${params.slug}`);
       setGame(response.data.game);
     } catch (error) {
+      router.push('/');
+
       if (error instanceof AxiosError) {
         const errorMessage: string | [] = error.response?.data.error;
 
         if (errorMessage === 'Content not found') {
           toast.error('Conteúdo não encontrado.');
-          router.push('/dashboard/games');
         }
 
         if (errorMessage === 'Internal server error') {
           toast.error('Ocorreu um interno no serviço da aplicação.');
         }
       }
-
-      router.push('/');
     } finally {
       setIsLoading(false);
     }

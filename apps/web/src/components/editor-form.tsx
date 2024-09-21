@@ -56,7 +56,7 @@ export const EditorForm = () => {
     }
 
     try {
-      const response = await api.get<{ game: IGame }>(`/games/${params.id}`);
+      const response = await api.get<{ game: IGame }>(`/games/${params.id}/full`);
 
       const game = response.data.game;
 

@@ -41,7 +41,23 @@ router.get(
       messages: messages,
     },
   ),
-  game.find,
+  game.getBySlug,
+);
+
+router.get(
+  '/games/:id/full',
+  celebrate(
+    {
+      [Segments.PARAMS]: {
+        id: Joi.string().required(),
+      },
+    },
+    {
+      messages: messages,
+    },
+  ),
+  adminAuth,
+  game.getById,
 );
 
 router.post(
