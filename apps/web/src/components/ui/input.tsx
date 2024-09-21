@@ -1,6 +1,7 @@
 'use client';
 
 import { ComponentProps, createContext, forwardRef, useContext } from 'react';
+import { twMerge } from 'tailwind-merge';
 import { tv, VariantProps } from 'tailwind-variants';
 
 const input = tv({
@@ -53,30 +54,45 @@ export const Input = ({ name, error, variant, className, ...props }: InputProps)
   );
 };
 
-interface ControlProps extends ComponentProps<'input'>, VariantProps<typeof input> {}
+interface ControlInputProps extends ComponentProps<'input'>, VariantProps<typeof input> {}
 
-const Control = forwardRef<HTMLInputElement, ControlProps>(
+const Control = forwardRef<HTMLInputElement, ControlInputProps>(
   ({ className, ...props }, ref) => {
     const { variant } = useContext(inputContext);
     const { control } = input({ variant });
-
-    if (props.type === 'textarea') {
-      return (
-        <textarea rows={4} className={control({ className })} {...props} ref={ref} />
-      );
-    }
 
     return <input className={control({ className })} {...props} ref={ref} />;
   },
 );
 
-const ControlSelect = forwardRef<HTMLInputElement, ControlProps>(
+interface ControlTextereaProps
+  extends ComponentProps<'textarea'>,
+    VariantProps<typeof input> {}
+
+const ControlTextarea = forwardRef<HTMLTextAreaElement, ControlTextereaProps>(
+  ({ className, ...props }, ref) => {
+    const { variant } = useContext(inputContext);
+    const { control } = input({ variant });
+
+    return <textarea rows={4} className={control({ className })} {...props} ref={ref} />;
+  },
+);
+
+interface ControlSelectProps
+  extends ComponentProps<'select'>,
+    VariantProps<typeof input> {}
+
+const ControlSelect = forwardRef<HTMLSelectElement, ControlSelectProps>(
   ({ className, children, ...props }, ref) => {
     const { variant } = useContext(inputContext);
     const { control } = input({ variant });
 
     return (
-      <select className={control({ className })} {...props} ref={ref}>
+      <select
+        className={control({ className: twMerge(className, 'mr-2') })}
+        {...props}
+        ref={ref}
+      >
         {children}
       </select>
     );
@@ -84,6 +100,7 @@ const ControlSelect = forwardRef<HTMLInputElement, ControlProps>(
 );
 
 Control.displayName = 'Control';
-ControlSelect.displayName = 'Control';
+ControlTextarea.displayName = 'ControlTextarea';
+ControlSelect.displayName = 'ControlSelect';
 
-export { Control, ControlSelect };
+export { Control, ControlSelect, ControlTextarea };

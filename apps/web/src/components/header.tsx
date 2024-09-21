@@ -98,7 +98,7 @@ export const Header = () => {
             className="data-[searchbar=open]:bg-background data-[searchbar=open]:ring-0"
             data-searchbar={searchBar ? 'open' : 'closed'}
           >
-            <Search className="group-focus-within:text-primary text-border mr-3 size-6 cursor-pointer transition-all" />
+            <Search className="group-focus-within:text-primary text-border size-6 cursor-pointer transition-all md:ml-3" />
 
             <Control
               ref={controlRef}
@@ -112,13 +112,13 @@ export const Header = () => {
               defaultValue={searchParams.get('search')?.toString()}
               data-searchbar={searchBar ? 'open' : 'closed'}
               placeholder="Pesquisar..."
-              className="data-[searchbar=open]:bg-background ml-1.5"
+              className="data-[searchbar=open]:bg-background"
             />
           </Input>
         </div>
 
         <div
-          className="flex items-center gap-4 data-[searchbar=open]:hidden"
+          className="flex items-center gap-2 data-[searchbar=open]:hidden md:gap-4"
           data-searchbar={searchBar ? 'open' : 'closed'}
         >
           <Button
@@ -170,9 +170,9 @@ export const Header = () => {
 
               <DropdownMenuContent
                 sideOffset={5}
-                className="mr-5 min-w-48 data-[state=closed]:animate-[menu-hide_200ms] data-[state=open]:animate-[menu-show_200ms]"
+                className="mr-5 min-w-48 max-w-48 data-[state=closed]:animate-[menu-hide_200ms] data-[state=open]:animate-[menu-show_200ms]"
               >
-                <h1 className="px-1.5 py-0.5 font-semibold">{`Olá, ${user.username}!`}</h1>
+                <h1 className="truncate px-1.5 py-0.5 font-semibold">{`Olá, ${user.username}!`}</h1>
 
                 <DropdownMenuSeparator />
 

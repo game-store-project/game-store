@@ -2,6 +2,33 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Disable highlight color on tap */
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Scrollbar width */
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+/* Scrollbar track */
+::-webkit-scrollbar-track {
+  background: hsl(var(--background));
+}
+
+/* Scrollbar handle */
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border) / 0.8);
+  border-radius: 5px;
+}
+
+/* Scrollbar handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--border) / 0.8);
+  border-radius: 5px;
+}
+
 @layer base {
   :root {
     --background: 214 23% 12%;

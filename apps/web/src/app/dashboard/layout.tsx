@@ -1,7 +1,6 @@
 import { hasAuthToken } from '@/actions/headers';
 import { Dashboard } from '@/components/dashboard';
 import { Header } from '@/components/header';
-import { Tabs } from '@/components/tabs';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { ReactNode } from 'react';
@@ -20,8 +19,6 @@ export default async function Layout({ children }: { children: ReactNode }) {
   return (
     <Dashboard>
       <Header />
-
-      <Tabs />
 
       {children}
     </Dashboard>
