@@ -30,11 +30,11 @@ router.get(
 router.get('/games', adminAuth, game.read);
 
 router.get(
-  '/games/:id',
+  '/games/:slug',
   celebrate(
     {
       [Segments.PARAMS]: {
-        id: Joi.string().required(),
+        slug: Joi.string().required(),
       },
     },
     {

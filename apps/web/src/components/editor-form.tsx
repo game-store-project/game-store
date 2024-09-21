@@ -20,6 +20,7 @@ export const EditorForm = () => {
     register,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<IEditor>({
     resolver: zodResolver(editorSchema),
@@ -27,7 +28,6 @@ export const EditorForm = () => {
   });
 
   const [genres, setGenres] = useState<IGenre[]>();
-  const [game, setGame] = useState<IGame>();
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
@@ -58,10 +58,35 @@ export const EditorForm = () => {
     try {
       const response = await api.get<{ game: IGame }>(`/games/${params.id}`);
 
-      setGame(response.data.game);
+      const game = response.data.game;
+
+      // Create the URL for the image
+      const imageUrl = `${process.env.NEXT_PUBLIC_URL_API}/${game.imageUrl}`;
+
+      // Fetch the image from the URL as a Blob
+      const imageResponse = await fetch(imageUrl);
+      const blob = await imageResponse.blob();
+
+      // Create a File from the Blob
+      const file = new File([blob], game.imageUrl, { type: blob.type });
+      const fileList = new DataTransfer();
+      fileList.items.add(file);
+
+      setValue('image', fileList.files);
+      setValue('title', game.title);
+      setValue('year', game.year);
+      setValue('price', game.price);
+      setValue('description', game.description);
+      setValue('genre', game.genreId);
+      setValue('disponibility', game.disponibility);
     } catch (error) {
       if (error instanceof AxiosError) {
         const errorMessage: string | [] = error.response?.data.error;
+
+        if (errorMessage === 'Content not found') {
+          toast.error('Conteúdo não encontrado.');
+          router.push('/dashboard/games');
+        }
 
         if (errorMessage === 'Internal server error') {
           toast.error('Ocorreu um interno no serviço da aplicação.');
@@ -70,7 +95,7 @@ export const EditorForm = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [params.id]);
+  }, [params.id, router, setValue]);
 
   useEffect(() => {
     fetchGame();
@@ -80,7 +105,7 @@ export const EditorForm = () => {
     fetchGenres();
   }, [fetchGenres]);
 
-  const handleCreate = async (data: IEditor) => {
+  const handleEditorSubmit = async (data: IEditor) => {
     setIsLoading(true);
     try {
       const formData = new FormData();
@@ -95,16 +120,60 @@ export const EditorForm = () => {
       formData.append('genre', data.genre);
       formData.append('disponibility', String(data.disponibility));
 
-      await api.post('/games', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      if (params.id) {
+        await api.put(`/games/${params.id}`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+
+        toast.success('Jogo atualizado com sucesso!');
+      } else {
+        await api.post('/games', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+
+        toast.success('Jogo criado com sucesso!');
+      }
 
       router.push('/dashboard/games');
     } catch (error) {
-      console.error('Erro ao enviar os dados', error);
+      if (error instanceof AxiosError) {
+        const errorMessage: string | [] = error.response?.data.error;
+
+        if (errorMessage === 'Title already registered') {
+          toast.error('Título já cadastrado');
+        }
+
+        if (errorMessage === 'File cannot be empty') {
+          toast.error('O arquivo não pode ser vazio');
+        }
+
+        if (errorMessage === 'Invalid file format') {
+          toast.error('Formato de arquivo inválido');
+        }
+
+        if (errorMessage === 'Content not found') {
+          toast.error('Conteúdo não encontrado');
+          router.push('/dashboard/games');
+        }
+
+        if (errorMessage === 'Internal server error') {
+          toast.error('Ocorreu um interno no serviço da aplicação');
+        }
+      } else {
+        toast.error('Ocorreu um erro inesperado');
+      }
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-1 items-center justify-center">
+        <Loading />
+      </div>
+    );
+  }
 
   const image = watch('image')?.item(0);
 
@@ -112,9 +181,9 @@ export const EditorForm = () => {
     <div className="pb-5">
       <form
         className="relative mx-auto mt-12 flex max-w-[700px] flex-col justify-center gap-12 px-6"
-        onSubmit={handleSubmit(handleCreate)}
+        onSubmit={handleSubmit(handleEditorSubmit)}
       >
-        <h1 className="text-2xl text-white">{game ? 'EDITAR JOGO' : 'NOVO JOGO'}</h1>
+        <h1 className="text-2xl text-white">{params.id ? 'EDITAR' : 'NOVO'} JOGO</h1>
         <div className="flex flex-col space-y-5">
           <Input
             error={errors.image?.message}

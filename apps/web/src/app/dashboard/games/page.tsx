@@ -3,7 +3,7 @@ import { GamesDashboard } from '@/components/games-dashboard';
 import { Tabs } from '@/components/tabs';
 import { notFound } from 'next/navigation';
 
-export default async function Games() {
+export default async function GamesDashboardPage() {
   const authToken = await hasAuthToken();
 
   if (!authToken) {
@@ -13,7 +13,7 @@ export default async function Games() {
   return (
     <>
       <Tabs />
-      <GamesDashboard />;
+      <GamesDashboard />
     </>
   );
 }

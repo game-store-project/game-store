@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: 'Painel Administrativo | GameStore',
 };
 
-export default async function Layout({ children }: { children: ReactNode }) {
+export default async function DashboardLayout({ children }: { children: ReactNode }) {
   const authToken = await hasAuthToken();
 
   if (!authToken) {

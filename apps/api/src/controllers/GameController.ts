@@ -51,12 +51,12 @@ export class GameController {
 
   find = async (req: Request, res: Response) => {
     try {
-      const { id } = req.params;
+      const { slug } = req.params;
 
       const game = await Game.findFirst({
         where: {
-          id: {
-            equals: id,
+          slug: {
+            equals: slug,
           },
         },
         include: { genre: true },
@@ -77,29 +77,34 @@ export class GameController {
         where: { title: { equals: title, mode: 'insensitive' } },
       });
 
-      if (game) res.status(409).json({ error: 'Title already registered' });
-      else {
-        const imageUrl = (await uploadImg(req)) as string | undefined;
-
-        if (!imageUrl) return res.status(400).json({ error: 'File cannot be empty' });
-        else if (imageUrl === 'error')
-          return res.status(400).json({ error: 'Invalid file format' });
-        else {
-          const newGame = {
-            title,
-            slug: slugify(title).toLowerCase(),
-            year,
-            price,
-            imageUrl,
-            description,
-            disponibility,
-            genreId: genre,
-          };
-          const game = await Game.create({ data: newGame });
-
-          res.status(201).json({ gameId: game.id });
-        }
+      if (game) {
+        res.status(409).json({ error: 'Title already registered' });
       }
+
+      if (!req.file) {
+        return res.status(400).json({ error: 'File cannot be empty' });
+      }
+
+      const imageUrl = await uploadImg(req);
+
+      if (imageUrl === 'error') {
+        return res.status(400).json({ error: 'Invalid file format' });
+      }
+
+      const newGame = {
+        title,
+        slug: slugify(title).toLowerCase(),
+        year,
+        price,
+        imageUrl,
+        description,
+        disponibility,
+        genreId: genre,
+      };
+
+      const createdGame = await Game.create({ data: newGame });
+
+      res.status(201).json({ gameId: createdGame.id });
     } catch (error) {
       return res.status(500).json({ error: 'Internal server error' });
     }
@@ -143,39 +148,45 @@ export class GameController {
 
       const idCheck = await Game.findUnique({ where: { id } });
 
-      if (idCheck) {
-        if (nameCheck && nameCheck.id != idCheck.id) {
-          res.status(409).json({ error: 'Title already registered' });
-        }
-
-        const imageUrl = req.file
-          ? ((await uploadImg(req)) as string | undefined)
-          : idCheck.imageUrl;
-
-        if (!imageUrl) return res.status(400).json({ error: 'File cannot be empty' });
-
-        if (imageUrl === 'error')
-          return res.status(400).json({ error: 'Invalid file format' });
-
-        const updateGame = {
-          title,
-          slug: slugify(title),
-          year,
-          price,
-          imageUrl,
-          description,
-          disponibility,
-          genreId: genre,
-        };
-
-        await Game.update({ where: { id }, data: { ...updateGame } });
-
-        if (req.file) await deleteImg(idCheck.imageUrl);
-
-        return res.status(200).json({ info: 'Game updated' });
-      } else {
+      if (!idCheck) {
         return res.status(404).json({ error: 'Content not found' });
       }
+
+      if (nameCheck && nameCheck.id !== idCheck.id) {
+        res.status(409).json({ error: 'Title already registered' });
+      }
+
+      if (!req.file) {
+        return res.status(400).json({ error: 'File cannot be empty' });
+      }
+
+      const imageKey = idCheck.imageUrl.split('/').pop();
+
+      const imageUrl =
+        imageKey === req.file.originalname ? idCheck.imageUrl : await uploadImg(req);
+
+      if (imageUrl === 'error') {
+        return res.status(400).json({ error: 'Invalid file format' });
+      }
+
+      const updateGame = {
+        title,
+        slug: slugify(title).toLowerCase(),
+        year,
+        price,
+        imageUrl,
+        description,
+        disponibility,
+        genreId: genre,
+      };
+
+      await Game.update({ where: { id }, data: { ...updateGame } });
+
+      if (idCheck.imageUrl !== imageUrl) {
+        await deleteImg(idCheck.imageUrl);
+      }
+
+      return res.status(200).json({ info: 'Game updated' });
     } catch (error) {
       return res.status(500).json({ error: 'Internal server error' });
     }

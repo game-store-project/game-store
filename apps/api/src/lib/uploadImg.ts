@@ -9,33 +9,29 @@ import stream from 'stream';
 
 const pump = promisify(pipeline);
 
-const uploadImg = async (req: Request) => {
-  if (req.file) {
-    const { originalname, mimetype, buffer } = req.file!;
+export const uploadImg = async (req: Request) => {
+  const { originalname, mimetype, buffer } = req.file!;
 
-    const mimeTypeRegex = /^image\/[a-zA-Z]+/;
-    const isValidFileFormat = mimeTypeRegex.test(mimetype);
+  const mimeTypeRegex = /^image\/[a-zA-Z]+/;
+  const isValidFileFormat = mimeTypeRegex.test(mimetype);
 
-    if (isValidFileFormat) {
-      try {
-        const fileId = randomUUID();
-        const fileName = fileId.concat(`.${originalname.split('.').pop()}`);
+  if (isValidFileFormat) {
+    try {
+      const fileId = randomUUID();
+      const fileName = fileId.concat(`.${originalname.split('.').pop()}`);
 
-        const directory = req.path.includes('games') ? 'covers/' : 'avatars/';
+      const directory = req.path.includes('games') ? 'covers/' : 'avatars/';
 
-        const readStream = stream.Readable.from(buffer);
-        const writeStream = createWriteStream(
-          resolve(__dirname, '../../public/uploads/', directory, fileName),
-        );
+      const readStream = stream.Readable.from(buffer);
+      const writeStream = createWriteStream(
+        resolve(__dirname, '../../public/uploads/', directory, fileName),
+      );
 
-        await pump(readStream, writeStream);
+      await pump(readStream, writeStream);
 
-        return `uploads/${directory}${fileName}`;
-      } catch (error) {
-        return 'error';
-      }
-    } else return 'error';
-  } else return undefined;
+      return `uploads/${directory}${fileName}`;
+    } catch (error) {
+      return 'error';
+    }
+  } else return 'error';
 };
-
-export { uploadImg };
