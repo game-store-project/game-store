@@ -186,7 +186,7 @@ export const Header = () => {
                 )}
 
                 <DropdownMenuItem asChild>
-                  <Link href={`/${user.username}`}>
+                  <Link href={`/me/${user.username}`}>
                     <User2 className="size-5" />
                     Meu perfil
                   </Link>

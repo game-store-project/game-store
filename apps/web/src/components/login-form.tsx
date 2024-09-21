@@ -11,7 +11,7 @@ import { AxiosError } from 'axios';
 import { Eye, EyeOff } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -35,6 +35,8 @@ export const LoginForm = () => {
 
   const { setUser } = useAuth();
   const { loadCartData, cartItems } = useCart();
+
+  const router = useRouter();
 
   const handleLogin = async (data: ILogin) => {
     setIsLoading(true);
@@ -64,7 +66,7 @@ export const LoginForm = () => {
 
       toast.info('Você entrou na sua conta!');
 
-      redirect('/');
+      router.push('/');
     } catch (error) {
       if (error instanceof AxiosError) {
         const errorMessage: string | [] = error.response?.data.error;

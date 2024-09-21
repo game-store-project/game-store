@@ -48,7 +48,7 @@ router.delete(
   cart.remove,
 );
 
-router.get(
+router.post(
   '/cart/buy',
   celebrate(
     {

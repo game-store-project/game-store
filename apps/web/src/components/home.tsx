@@ -1,6 +1,5 @@
 'use client';
 
-import { setCartToken } from '@/actions/headers';
 import { IGame } from '@/dtos/game';
 import { useCart } from '@/hooks/use-cart';
 import { api } from '@/lib/api';
@@ -32,7 +31,7 @@ export const Home = () => {
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const { loadCartData } = useCart();
+  const { addToCart } = useCart();
 
   const fetchGames = useCallback(async () => {
     try {
@@ -70,32 +69,6 @@ export const Home = () => {
 
     return () => clearInterval(interval);
   }, [games.highlights?.length]);
-
-  const handleAddToCart = async (e: React.MouseEvent<HTMLButtonElement>, id: string) => {
-    e.preventDefault();
-
-    try {
-      const response = await api.put(`/cart/${id}`);
-
-      await setCartToken(response.data.cartItems);
-
-      await loadCartData();
-
-      toast.success('Item adicionado ao carrinho.');
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        const errorMessage: string | [] = error.response?.data.error;
-
-        if (errorMessage === 'Item is already on the cart') {
-          toast.error('Este item já está no carrinho.');
-        }
-
-        if (errorMessage === 'Internal server error') {
-          toast.error('Ocorreu um interno no serviço da aplicação.');
-        }
-      }
-    }
-  };
 
   const scrollLeft = (ref: RefObject<HTMLDivElement>) => {
     if (ref.current) {
@@ -142,9 +115,11 @@ export const Home = () => {
 
             <button
               className="bg-border/70 hover:bg-destructive hover:border-destructive absolute bottom-5 right-5 z-10 mx-auto mt-5 flex h-9 w-full max-w-40 items-center justify-center gap-2 rounded-lg border border-gray-800 px-4 font-medium transition-colors duration-500"
-              onClick={(e) =>
-                handleAddToCart(e, games.highlights[currentIndex]?.id as string)
-              }
+              onClick={(e) => {
+                e.preventDefault();
+                addToCart(games.highlights[currentIndex]?.id as string);
+              }}
+              disabled={!games.highlights[currentIndex]?.disponibility}
             >
               <ShoppingCart className="size-5" />
               {formatPrice(games.highlights[currentIndex]?.price as number)}
@@ -200,7 +175,10 @@ export const Home = () => {
                 price={game.price}
                 year={new Date(game.createdAt).getFullYear()}
                 imageUrl={game.imageUrl}
-                onClick={(e) => handleAddToCart(e, game.id)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  addToCart(game.id);
+                }}
               />
             ))}
           </div>
@@ -236,7 +214,10 @@ export const Home = () => {
                 price={game.price}
                 year={new Date(game.createdAt).getFullYear()}
                 imageUrl={game.imageUrl}
-                onClick={(e) => handleAddToCart(e, game.id)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  addToCart(game.id);
+                }}
               />
             ))}
           </div>
@@ -272,7 +253,10 @@ export const Home = () => {
                 price={game.price}
                 year={new Date(game.createdAt).getFullYear()}
                 imageUrl={game.imageUrl}
-                onClick={(e) => handleAddToCart(e, game.id)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  addToCart(game.id);
+                }}
               />
             ))}
           </div>

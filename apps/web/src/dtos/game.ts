@@ -1,4 +1,4 @@
-export interface IGame {
+export type IGame = {
   id: string;
   title: string;
   slug: string;
@@ -14,4 +14,4 @@ export interface IGame {
     name: string;
     createdAt: Date;
   };
-}
+};

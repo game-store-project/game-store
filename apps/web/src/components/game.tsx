@@ -10,12 +10,26 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import { GameInfo } from './game-info';
 import { Button } from './ui/button';
 import { Loading } from './ui/loading';
+import { useCart } from '@/hooks/use-cart';
+
+interface Props {
+  info: string;
+  value?: string;
+}
+
+export function GameInfo(props: Props) {
+  return (
+    <p className="text-white">
+      {props.info}: <span className="text-primary">{props.value || 'Indefinido'}</span>
+    </p>
+  );
+}
 
 export const Game = ({ params }: GameParams) => {
   const [game, setGame] = useState<IGame>({} as IGame);
+  const { addToCart } = useCart();
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
@@ -65,7 +79,7 @@ export const Game = ({ params }: GameParams) => {
           }}
         >
           <div className="z-10 mx-auto my-12 flex w-full max-w-[1260px] flex-col gap-3 px-6 sm:gap-9">
-            <h1 className="text-2xl font-bold text-white">{game.title?.toUpperCase()}</h1>
+            <h1 className="text-2xl font-bold">{game.title?.toUpperCase()}</h1>
             <div className="flex flex-wrap justify-center gap-2 sm:gap-12">
               <Image
                 className="size-auto rounded-xl"
@@ -83,7 +97,7 @@ export const Game = ({ params }: GameParams) => {
                   <GameInfo info="Plataforma" value="Windows" />
                   <GameInfo info="Tipo de ativação" value="Chave de ativação" />
                 </div>
-                <Button className="gap-2">
+                <Button className="gap-2" onClick={() => addToCart(game.id)}>
                   <ShoppingCart />
                   {formatPrice(game.price)}
                 </Button>

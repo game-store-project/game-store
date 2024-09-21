@@ -125,7 +125,7 @@ export class CartController {
             info: 'Item removed to the cart',
             cartItems: token,
           });
-        } else return res.status(404).json({ error: 'The game not exists on the cart' });
+        } else return res.status(404).json({ error: 'Content not found' });
       }
     } catch (error) {
       return res.status(500).json({ error: 'Internal server error' });
