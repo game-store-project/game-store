@@ -3,7 +3,7 @@ import { EditorForm } from '@/components/editor-form';
 import { notFound } from 'next/navigation';
 
 export interface GameParams {
-  params: {
+  params?: {
     id: string;
   };
 }
