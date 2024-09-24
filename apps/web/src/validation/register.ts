@@ -4,8 +4,8 @@ export const registerSchema = z
   .object({
     username: z
       .string({ required_error: 'Preencha seu nome de usuário' })
-      .min(5, 'Preencha seu nome de usuário')
-      .max(40, 'Preencha seu nome de usuário')
+      .min(5, 'Nome de usuário deve ter ao menos 5 caracteres')
+      .max(40, 'Nome de usuário deve ter no máximo 40 caracteres')
       .regex(/[A-Za-z0-9_]+/, 'Nome de usuário inválido'),
     email: z
       .string({ required_error: 'Endereço de e-mail inválido' })

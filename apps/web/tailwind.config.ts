@@ -51,6 +51,7 @@ const config = {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
+        transluced: 'hsla(var(--transluced))',
       },
       borderRadius: {
         lg: 'var(--radius)',

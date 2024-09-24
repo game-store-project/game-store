@@ -1,3 +1,5 @@
+import { IGame } from './game';
+
 export type IUser = {
   id: string;
   avatar: string;
@@ -5,4 +7,5 @@ export type IUser = {
   email: string;
   isAdmin: boolean;
   createdAt: Date;
+  games: IGame[];
 };

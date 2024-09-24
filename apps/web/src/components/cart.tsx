@@ -80,11 +80,11 @@ export const Cart = () => {
     { title: 'PIX', checked: false, method: 'pix', tax: 1 },
     { title: 'CARTÃO DE CRÉDITO', checked: false, method: 'debit-card', tax: 1.05 },
     { title: 'CARTÃO DE DÉBITO', checked: false, method: 'credit-card', tax: 1.02 },
-    { title: 'BOLETO', checked: false, method: 'boleto', tax: 1.01 },
+    { title: 'BOLETO', checked: false, method: 'ticket', tax: 1.01 },
   ]);
 
   const { cartItems, buyCartItems, removeCartItem } = useCart();
-  const { user } = useAuth();
+  const { user, loadUserData } = useAuth();
   const router = useRouter();
 
   const handleSetPaymentMethod = (method: string) => {
@@ -109,6 +109,11 @@ export const Cart = () => {
   };
 
   const handleSubmitBuy = async () => {
+    if (!method.some((item) => item.checked)) {
+      toast.error('Você precisa selecionar um método de pagamento.');
+      return;
+    }
+
     setIsLoading(true);
 
     if (!user?.id) {
@@ -119,14 +124,16 @@ export const Cart = () => {
 
     await buyCartItems();
 
+    await loadUserData();
+
     router.push(`/me/${user?.username}`);
 
     setIsLoading(false);
   };
 
   return (
-    <section className="mx-auto w-full max-w-[1260px] space-y-3 px-6 py-3">
-      <h1 className="text-2xl font-bold">MEU CARRINHO</h1>
+    <section className="mx-auto mt-8 w-full max-w-[1260px] space-y-3 px-6">
+      <h1 className="text-xl">MEU CARRINHO</h1>
       <div className="flex flex-wrap gap-6 lg:flex-nowrap">
         <div className="bg-input flex max-h-[504px] w-full flex-col justify-between space-y-3 rounded-lg p-3 lg:w-[750px]">
           {cartItems.length === 0 ? (

@@ -2,17 +2,17 @@
 
 import { GameParams } from '@/app/[slug]/page';
 import { IGame } from '@/dtos/game';
+import { useCart } from '@/hooks/use-cart';
 import { api } from '@/lib/api';
 import { formatPrice } from '@/utils/price';
 import { AxiosError } from 'axios';
 import { ShoppingCart } from 'lucide-react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { notFound, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { Button } from './ui/button';
 import { Loading } from './ui/loading';
-import { useCart } from '@/hooks/use-cart';
 
 interface Props {
   info: string;
@@ -38,17 +38,12 @@ export const Game = ({ params }: GameParams) => {
       const response = await api.get<{ game: IGame }>(`/games/${params.slug}`);
       setGame(response.data.game);
     } catch (error) {
-      router.push('/');
-
       if (error instanceof AxiosError) {
         const errorMessage: string | [] = error.response?.data.error;
 
-        if (errorMessage === 'Content not found') {
-          toast.error('Conteúdo não encontrado.');
-        }
-
         if (errorMessage === 'Internal server error') {
           toast.error('Ocorreu um interno no serviço da aplicação.');
+          router.push('/');
         }
       }
     } finally {
@@ -66,6 +61,10 @@ export const Game = ({ params }: GameParams) => {
         <Loading />
       </div>
     );
+  }
+
+  if (!game.id && !isLoading) {
+    return notFound();
   }
 
   return (

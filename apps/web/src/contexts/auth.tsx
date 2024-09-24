@@ -15,6 +15,7 @@ import { IUser } from '../dtos/user';
 export interface AuthContextProps {
   user: IUser | undefined;
   setUser: (user: IUser) => void;
+  loadUserData: () => Promise<void>;
   isLoadingUserData: boolean;
   removeUserAndToken: () => Promise<void>;
 }
@@ -74,6 +75,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       value={{
         user,
         isLoadingUserData,
+        loadUserData,
         removeUserAndToken,
         setUser,
       }}

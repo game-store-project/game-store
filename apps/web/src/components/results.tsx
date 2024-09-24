@@ -1,6 +1,5 @@
 'use client';
 
-import { setCartToken } from '@/actions/headers';
 import { ResultsProps } from '@/app/results/page';
 import { IGame } from '@/dtos/game';
 import { useCart } from '@/hooks/use-cart';
@@ -16,7 +15,7 @@ export const Results = ({ searchParams }: ResultsProps) => {
 
   const [isLoading, setIsLoading] = useState(true);
 
-  const { loadCartData } = useCart();
+  const { addToCart } = useCart();
 
   const fetchGames = useCallback(async () => {
     try {
@@ -48,32 +47,6 @@ export const Results = ({ searchParams }: ResultsProps) => {
     setIsLoading(true);
   }, [fetchGames, searchParams?.search]);
 
-  const handleAddToCart = async (e: React.MouseEvent<HTMLButtonElement>, id: string) => {
-    e.preventDefault();
-
-    try {
-      const response = await api.put(`/cart/${id}`);
-
-      await setCartToken(response.data.cartItems);
-
-      await loadCartData();
-
-      toast.success('Item adicionado ao carrinho.');
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        const errorMessage: string | [] = error.response?.data.error;
-
-        if (errorMessage === 'Item is already on the cart') {
-          toast.error('Este item já está no carrinho.');
-        }
-
-        if (errorMessage === 'Internal server error') {
-          toast.error('Ocorreu um interno no serviço da aplicação.');
-        }
-      }
-    }
-  };
-
   if (isLoading) {
     return (
       <div className="flex h-full">
@@ -96,9 +69,12 @@ export const Results = ({ searchParams }: ResultsProps) => {
               title={game.title}
               slug={game.slug}
               price={game.price}
-              year={new Date(game.createdAt).getFullYear()}
+              year={game.year}
               imageUrl={game.imageUrl}
-              onClick={(e) => handleAddToCart(e, game.id)}
+              onClick={(e) => {
+                e.preventDefault();
+                addToCart(game.id);
+              }}
             />
           ))}
         </div>

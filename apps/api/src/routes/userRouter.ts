@@ -53,13 +53,10 @@ router.post(
 router.get('/users/account', userAuth, uAccount.account);
 
 router.patch(
-  '/users/account/avatar/:id',
+  '/users/account/avatar',
   parserImg,
   celebrate(
     {
-      [Segments.PARAMS]: {
-        id: Joi.string().uuid().required(),
-      },
       [Segments.BODY]: Joi.object().keys({
         image: Joi.allow(),
       }),
@@ -88,23 +85,19 @@ router.patch(
 );
 
 router.put(
-  '/users/:id',
+  '/users/account',
   celebrate(
     {
-      [Segments.PARAMS]: {
-        id: Joi.string().uuid().required(),
-      },
       [Segments.BODY]: Joi.object().keys({
         username: Joi.string()
           .pattern(/[A-Za-z0-9_]+/)
           .min(5)
           .max(40)
-          .required(),
-        email: Joi.string().email().required(),
-        address: Joi.string().min(1).required(),
-        password: Joi.string().min(6).required(),
-        new_password: Joi.string().min(6),
-        point: Joi.array().required(),
+          .optional(),
+        email: Joi.string().email().optional(),
+        password: Joi.string().min(6).optional(),
+        new_password: Joi.string().min(6).optional(),
+        confirm_password: Joi.string().valid(Joi.ref('new_password')).optional(),
       }),
     },
     { messages },
@@ -113,13 +106,10 @@ router.put(
   uAccount.edit,
 );
 
-router.post(
-  '/users/:id',
+router.delete(
+  '/users/account',
   celebrate(
     {
-      [Segments.PARAMS]: {
-        id: Joi.string().uuid().required(),
-      },
       [Segments.BODY]: Joi.object().keys({
         password: Joi.string().min(6).required(),
       }),

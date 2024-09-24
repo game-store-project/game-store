@@ -53,8 +53,6 @@ export const LoginForm = () => {
 
       await setAuthToken(token);
 
-      setUser(user);
-
       if (cartToken) {
         await setCartToken(cartToken);
         await loadCartData();
@@ -64,9 +62,11 @@ export const LoginForm = () => {
         }
       }
 
+      setUser(user);
+
       toast.info('Você entrou na sua conta!');
 
-      router.push('/');
+      router.prefetch('/');
     } catch (error) {
       if (error instanceof AxiosError) {
         const errorMessage: string | [] = error.response?.data.error;

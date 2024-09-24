@@ -7,15 +7,16 @@ import { editorSchema, IEditor } from '@/validation/editor';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AxiosError } from 'axios';
 import Image from 'next/image';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { Button } from './ui/button';
 import { Control, ControlSelect, ControlTextarea, Input } from './ui/input';
 import { Loading } from './ui/loading';
+import { GameParams } from '@/app/dashboard/games/editor/[id]/page';
 
-export const EditorForm = () => {
+export const EditorForm = ({ params }: GameParams) => {
   const {
     register,
     handleSubmit,
@@ -30,8 +31,6 @@ export const EditorForm = () => {
   const [genres, setGenres] = useState<IGenre[]>();
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
-
-  const params = useParams();
 
   const fetchGenres = useCallback(async () => {
     try {
@@ -50,7 +49,7 @@ export const EditorForm = () => {
   }, []);
 
   const fetchGame = useCallback(async () => {
-    if (!params.id) {
+    if (!params?.id) {
       setIsLoading(false);
       return;
     }
@@ -95,11 +94,11 @@ export const EditorForm = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [params.id, router, setValue]);
+  }, [params?.id, router, setValue]);
 
   useEffect(() => {
     fetchGame();
-  }, [fetchGame, params.id]);
+  }, [fetchGame, params?.id]);
 
   useEffect(() => {
     fetchGenres();
@@ -120,7 +119,7 @@ export const EditorForm = () => {
       formData.append('genre', data.genre);
       formData.append('disponibility', String(data.disponibility));
 
-      if (params.id) {
+      if (params?.id) {
         await api.put(`/games/${params.id}`, formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
@@ -183,7 +182,7 @@ export const EditorForm = () => {
         className="relative mx-auto mt-12 flex max-w-[700px] flex-col justify-center gap-12 px-6"
         onSubmit={handleSubmit(handleEditorSubmit)}
       >
-        <h1 className="text-2xl text-white">{params.id ? 'EDITAR' : 'NOVO'} JOGO</h1>
+        <h1 className="text-2xl text-white">{params?.id ? 'EDITAR' : 'NOVO'} JOGO</h1>
         <div className="flex flex-col space-y-5">
           <Input
             error={errors.image?.message}

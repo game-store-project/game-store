@@ -10,24 +10,37 @@ export class UserAccountController {
       const user = await User.findFirst({
         where: { id: req.id },
         include: {
-          games: true,
+          games: {
+            select: {
+              game: {
+                select: {
+                  id: true,
+                  title: true,
+                  year: true,
+                  imageUrl: true,
+                  slug: true,
+                },
+              },
+            },
+          },
         },
       });
 
-      if (user) {
-        return res.json({
-          user: {
-            id: user.id,
-            avatar: user.avatarUrl,
-            username: user.username,
-            email: user.email,
-            isAdmin: user.isAdmin,
-          },
-          cartItems: user.cartItems,
-        });
+      if (!user) {
+        return res.status(404).json({ error: 'Resource not found' });
       }
 
-      return res.status(404).json({ error: 'Resource not found' });
+      return res.json({
+        user: {
+          id: user.id,
+          avatar: user.avatarUrl,
+          username: user.username,
+          email: user.email,
+          isAdmin: user.isAdmin,
+          games: user.games.map((i) => i.game),
+        },
+        cartItems: user.cartItems,
+      });
     } catch (error) {
       return res.sendStatus(500);
     }
@@ -35,92 +48,104 @@ export class UserAccountController {
 
   edit = async (req: Request, res: Response) => {
     try {
-      const { id } = req.params;
+      const data = req.body;
+      const id = req.id;
 
-      const { username, email, password, new_password } = req.body;
+      const existingUser = await User.findUnique({
+        where: { id },
+      });
 
-      const [existingUserByUsername, existingUserByEmail] = await Promise.all([
-        User.findFirst({
-          where: { username: { equals: username, mode: 'insensitive' } },
-        }),
-        User.findFirst({
-          where: { email: { equals: email, mode: 'insensitive' } },
-        }),
-      ]);
+      if (!existingUser) {
+        return res.status(404).json({ error: 'Resource not found' });
+      }
 
-      if (existingUserByUsername && existingUserByUsername.id != id)
-        return res.status(409).json({ error: 'Username in use' });
+      if (data?.username) {
+        const userByUsername = await User.findFirst({
+          where: { username: { equals: data.username, mode: 'insensitive' } },
+        });
 
-      if (existingUserByEmail && existingUserByEmail.id != id)
-        return res.status(409).json({ error: 'Email in use' });
+        if (userByUsername && userByUsername.id !== id) {
+          return res.status(409).json({ error: 'Username in use' });
+        }
+      }
 
-      const user = await User.findUnique({ where: { id } });
+      if (data?.email) {
+        const userByEmail = await User.findFirst({
+          where: { email: { equals: data.email, mode: 'insensitive' } },
+        });
 
-      if (user && user.id == req.id) {
-        const check = await bcrypt.compare(password, user.password);
+        if (userByEmail && userByEmail.id !== id) {
+          return res.status(409).json({ error: 'Email in use' });
+        }
+      }
 
-        if (check) {
-          if (new_password) {
-            const hash = await bcrypt.hash(new_password, 10);
+      if (data?.email || data?.new_password) {
+        if (!data?.password) {
+          return res.status(400).json({ error: 'Password is required' });
+        }
+      }
 
-            const altUser = {
-              username: username.toLowerCase(),
-              email: email.toLowerCase(),
-              password: hash,
-            };
+      if (data?.password) {
+        const check = await bcrypt.compare(data.password, existingUser.password);
 
-            await User.update({ where: { id }, data: { ...altUser } });
-          } else {
-            const altUser = {
-              username: username.toLowerCase(),
-              email: email.toLowerCase(),
-            };
-
-            await User.update({ where: { id }, data: { ...altUser } });
-          }
-
-          const userUpdated = await User.findUnique({ where: { id } });
-
-          return res.json({
-            user: {
-              username: userUpdated?.username,
-              email: userUpdated?.email,
-            },
-          });
-        } else {
+        if (!check) {
           return res.status(401).json({ error: 'Password is wrong' });
         }
-      } else {
-        return res.status(404).json({ error: 'Validation error' });
       }
+
+      const hash = data?.new_password
+        ? await bcrypt.hash(data.new_password, 10)
+        : undefined;
+
+      const updateData = {
+        email: data?.email?.toLowerCase(),
+        username: data?.username,
+        password: hash,
+      };
+
+      await User.update({
+        where: { id },
+        data: { ...updateData },
+      });
+
+      return res.json({
+        ...updateData,
+        password: undefined,
+      });
     } catch (error) {
       return res.status(500).json({ error: 'Internal server error' });
     }
   };
 
   delete = async (req: Request, res: Response) => {
-    const { id } = req.params;
+    const id = req.id;
 
     const { password } = req.body;
 
     try {
       const user = await User.findUnique({ where: { id } });
 
-      if (user && user.id === req.id && !user.isAdmin) {
-        const check = await bcrypt.compare(password, user.password);
+      if (!user) {
+        return res.status(404).json({ error: 'Resource not found' });
+      }
 
-        if (check) {
-          await User.delete({ where: { username: user.username } });
-
-          if (user.avatarUrl) {
-            await deleteImg(user.avatarUrl);
-          }
-
-          return res.status(200).json({ info: 'Account Deleted' });
-        } else return res.status(401).json({ error: 'Password is wrong' });
-      } else if (user && user.isAdmin)
+      if (user.isAdmin) {
         return res.status(401).json({ error: `Admin's can't delete your account` });
-      else return res.status(404).send('Content not found');
+      }
+
+      const check = await bcrypt.compare(password, user.password);
+
+      if (!check) {
+        return res.status(401).json({ error: 'Password is wrong' });
+      }
+
+      await User.delete({ where: { username: user.username } });
+
+      if (user.avatarUrl) {
+        await deleteImg(user.avatarUrl);
+      }
+
+      return res.status(200).json({ info: 'Account Deleted' });
     } catch (error) {
       return res.status(500).json({ error: 'Internal server error' });
     }
@@ -128,26 +153,31 @@ export class UserAccountController {
 
   changeAvatar = async (req: Request, res: Response) => {
     try {
-      const { id } = req.params;
+      const id = req.id;
 
       const user = await User.findUnique({ where: { id } });
 
-      if (user) {
-        const avatarUrl = (await uploadImg(req)) as string | undefined;
-
-        if (!avatarUrl) return res.status(400).json({ error: 'File cannot be empty' });
-
-        if (avatarUrl === 'error')
-          return res.status(400).json({ error: 'Invalid file format' });
-
-        await User.update({ where: { id }, data: { avatarUrl } });
-
-        if (user.avatarUrl) {
-          await deleteImg(user.avatarUrl);
-        }
-
-        return res.json({ avatarUrl: avatarUrl });
+      if (!user) {
+        return res.status(404).json({ error: 'Resource not found' });
       }
+
+      if (!req.file) {
+        return res.status(400).json({ error: 'File cannot be empty' });
+      }
+
+      const avatarUrl = (await uploadImg(req)) as string | undefined;
+
+      if (avatarUrl === 'error') {
+        return res.status(400).json({ error: 'Invalid file format' });
+      }
+
+      await User.update({ where: { id }, data: { avatarUrl } });
+
+      if (user.avatarUrl) {
+        await deleteImg(user.avatarUrl);
+      }
+
+      return res.json({ avatar: avatarUrl });
     } catch (error) {
       return res.status(500).json({ error: 'Internal server error' });
     }

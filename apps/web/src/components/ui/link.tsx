@@ -9,6 +9,8 @@ const link = tv({
     variant: {
       default: 'hover:border-secondary active:bg-secondary/80',
       primary: 'bg-primary text-purple-50 hover:bg-primary/90 active:bg-primary/80',
+      toggle:
+        'group rounded-full bg-secondary/60 hover:bg-secondary hover:ring-primary focus-visible:ring-primary active:bg-secondary/80 p-2.5',
     },
   },
 

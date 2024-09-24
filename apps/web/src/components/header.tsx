@@ -12,7 +12,7 @@ import {
   User2,
 } from 'lucide-react';
 import Image from 'next/image';
-import Link from 'next/link';
+import NextLink from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
@@ -26,6 +26,7 @@ import {
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
 import { Control, Input } from './ui/input';
+import { Link } from './ui/link';
 
 export const Header = () => {
   const [searchBar, setSearchBar] = useState(false);
@@ -69,7 +70,7 @@ export const Header = () => {
   return (
     <header className="border-border border-b">
       <div className="mx-auto flex w-full max-w-[1260px] items-center justify-between gap-4 px-6 py-3">
-        <Link
+        <NextLink
           href="/"
           title="Página inicial"
           className="flex min-w-fit data-[searchbar=open]:hidden"
@@ -86,7 +87,7 @@ export const Header = () => {
               </span>
             </div>
           </div>
-        </Link>
+        </NextLink>
 
         <div
           className="ml-auto hidden items-center data-[searchbar=open]:block data-[searchbar=open]:w-full md:flex"
@@ -131,25 +132,28 @@ export const Header = () => {
             <SearchIcon className="text-foreground transition-all" />
           </Button>
 
-          <Button variant="toggle" size="toggle" className="relative">
-            <Link href="/cart" title="Carrinho de compras" className="relative">
-              <ShoppingCart className="text-foreground transition-all" />
-            </Link>
-            <div className="bg-destructive absolute bottom-0 right-0 -mb-1 -mr-1 flex size-5 items-center justify-center rounded-full">
+          <Link
+            href="/cart"
+            title="Carrinho de compras"
+            className="relative"
+            variant="toggle"
+          >
+            <ShoppingCart className="text-foreground size-6 transition-all" />
+            <div className="bg-destructive pointer-events-none absolute bottom-0 right-0 -mb-1 -mr-1 flex size-5 items-center justify-center rounded-full">
               <span className="text-xs font-bold text-white">{cartItems.length}</span>
             </div>
-          </Button>
+          </Link>
 
           {!user?.id ? (
-            <Button className="py-2.5">
-              <Link
+            <Button className="p-0">
+              <NextLink
                 href="/login"
-                className="inline-flex items-center gap-2 px-2 md:px-4"
+                className="inline-flex size-full items-center gap-2 px-2 py-2.5 md:px-4"
                 title="Entrar na conta"
               >
                 <LogIn className="size-6" />
                 <span className="hidden md:block">Entrar</span>
-              </Link>
+              </NextLink>
             </Button>
           ) : (
             <DropdownMenu>
@@ -178,18 +182,18 @@ export const Header = () => {
 
                 {user?.isAdmin && (
                   <DropdownMenuItem asChild>
-                    <Link href="/dashboard">
+                    <NextLink href="/dashboard">
                       <Cog className="size-5" />
                       Administrativo
-                    </Link>
+                    </NextLink>
                   </DropdownMenuItem>
                 )}
 
                 <DropdownMenuItem asChild>
-                  <Link href={`/me/${user.username}`}>
+                  <NextLink href={`/me/${user.username}`}>
                     <User2 className="size-5" />
                     Meu perfil
-                  </Link>
+                  </NextLink>
                 </DropdownMenuItem>
 
                 <DropdownMenuSeparator />

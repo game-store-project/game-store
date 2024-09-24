@@ -24,7 +24,7 @@ export const DropdownMenuTrigger = ({
   return (
     <DropdownMenuPrimitive.Trigger
       className={twMerge(
-        'focus-visible:ring-primary size-10 rounded-full outline-none transition-all focus-visible:ring-1',
+        'focus-visible:ring-primary size-10 min-w-10 rounded-full outline-none transition-all focus-visible:ring-1',
         className,
       )}
       {...props}

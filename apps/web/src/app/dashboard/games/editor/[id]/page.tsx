@@ -2,12 +2,18 @@ import { hasAuthToken } from '@/actions/headers';
 import { EditorForm } from '@/components/editor-form';
 import { notFound } from 'next/navigation';
 
-export default async function UpdateGamePage() {
+export interface GameParams {
+  params: {
+    id: string;
+  };
+}
+
+export default async function UpdateGamePage({ params }: GameParams) {
   const authToken = await hasAuthToken();
 
   if (!authToken) {
     notFound();
   }
 
-  return <EditorForm />;
+  return <EditorForm params={params} />;
 }

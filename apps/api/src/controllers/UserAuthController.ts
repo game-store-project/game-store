@@ -26,7 +26,7 @@ export class UserAuthController {
       const hash = await bcrypt.hash(password, 10);
       const newUser = {
         username,
-        email,
+        email: email.toLowerCase(),
         password: hash,
       };
 
@@ -43,6 +43,21 @@ export class UserAuthController {
     try {
       const userCheck = await User.findFirst({
         where: { email: { equals: email, mode: 'insensitive' } },
+        include: {
+          games: {
+            select: {
+              game: {
+                select: {
+                  id: true,
+                  title: true,
+                  year: true,
+                  imageUrl: true,
+                  slug: true,
+                },
+              },
+            },
+          },
+        },
       });
 
       if (userCheck) {
@@ -59,6 +74,7 @@ export class UserAuthController {
               username: userCheck.username,
               email: userCheck.email,
               isAdmin: userCheck.isAdmin,
+              games: userCheck.games.map((i) => i.game),
             },
             cartItems: userCheck.cartItems,
           });

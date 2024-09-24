@@ -94,14 +94,16 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     try {
       const response = await api.post('/cart/buy', {});
 
-      const notAdded = response.data.notAdded;
+      const { info, notAdded } = response.data.info;
+
+      if (info === 'Titles added') {
+        toast.success('Compra realizada com sucesso!');
+      }
 
       if (notAdded?.length) {
-        toast.error(
-          `Alguns itens não comprados pois já estavam na sua biblioteca, ${notAdded.join(', ')}.`,
+        toast.warning(
+          `Compra realizada, mas alguns itens não comprados pois já estavam na sua biblioteca, ${notAdded.join(', ')}.`,
         );
-      } else {
-        toast.success('Compra realizada com sucesso!');
       }
 
       await clearCart();
