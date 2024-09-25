@@ -94,7 +94,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     try {
       const response = await api.post('/cart/buy', {});
 
-      const { info, notAdded } = response.data.info;
+      const { info, notAdded } = response.data;
 
       if (info === 'Titles added') {
         toast.success('Compra realizada com sucesso!');
