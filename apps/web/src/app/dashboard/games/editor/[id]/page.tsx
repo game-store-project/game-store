@@ -1,6 +1,11 @@
 import { hasAuthToken } from '@/actions/headers';
 import { EditorForm } from '@/components/editor-form';
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+
+export const metadata: Metadata = {
+  title: 'Editar Jogo | GameStore',
+};
 
 export interface GameParams {
   params?: {

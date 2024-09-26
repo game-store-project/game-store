@@ -16,7 +16,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { AxiosError } from 'axios';
 import { AtSign, Eye, EyeOff, Lock, PenSquare, UserPen } from 'lucide-react';
 import Image from 'next/image';
-import { notFound, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -41,8 +41,6 @@ export const Profile = ({ params }: ProfileParams) => {
     null,
   );
 
-  // const pathname = usePathname();
-  // const params = useParams();
   const router = useRouter();
 
   const {
@@ -69,10 +67,6 @@ export const Profile = ({ params }: ProfileParams) => {
     new_password: true,
     confirm_password: true,
   });
-
-  if (!user?.id || user.username !== params.profile) {
-    return notFound();
-  }
 
   const handleChangeUserAvatar = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -245,9 +239,9 @@ export const Profile = ({ params }: ProfileParams) => {
             </div>
 
             <div className="flex max-w-44 flex-col justify-center sm:max-w-full">
-              <span className="truncate font-bold sm:text-lg">{user.username}</span>
+              <span className="truncate font-bold sm:text-lg">{user?.username}</span>
               <span className="truncate text-xs text-gray-400 sm:text-sm">
-                {user.email}
+                {user?.email}
               </span>
             </div>
           </div>
@@ -293,7 +287,9 @@ export const Profile = ({ params }: ProfileParams) => {
         </div>
       </div>
 
-      {user.games.length > 0 && <GameSection games={user.games} title="MEUS JOGOS" />}
+      {user?.games && user.games.length > 0 && (
+        <GameSection games={user.games} title="MEUS JOGOS" />
+      )}
 
       <Dialog open={open}>
         <DialogOverlay className="data-[state=closed]:animate-[overlay-hide_300ms] data-[state=open]:animate-[overlay-show_200ms]">

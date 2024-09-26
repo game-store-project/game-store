@@ -53,7 +53,8 @@ export const GameSection = ({ title, filter, games }: GameSectionProps) => {
       <div className="relative flex items-center">
         {games.length > 2 && (
           <button
-            className="absolute left-0 z-10 rounded-r-full bg-black/70 px-1 py-6 shadow-black transition-all duration-300 hover:bg-black/90 hover:px-3 hover:shadow-lg min-[1260px]:hidden"
+            className="absolute left-0 z-10 rounded-r-full bg-black/70 px-1 py-6 shadow-black transition-all duration-300 hover:bg-black/90 hover:px-3 hover:shadow-lg data-[length=true]:block min-[1260px]:hidden"
+            data-length={games.length > 6 ? true : false}
             onClick={() => scrollLeft(divRef)}
           >
             {'<'}
@@ -77,7 +78,8 @@ export const GameSection = ({ title, filter, games }: GameSectionProps) => {
         </div>
         {games.length > 2 && (
           <button
-            className="absolute right-0 z-10 rounded-l-full bg-black/70 px-1 py-6 shadow-black transition-all duration-300 hover:bg-black/90 hover:px-3 hover:shadow-lg min-[1260px]:hidden"
+            className="absolute right-0 z-10 rounded-l-full bg-black/70 px-1 py-6 shadow-black transition-all duration-300 hover:bg-black/90 hover:px-3 hover:shadow-lg data-[length=true]:block min-[1260px]:hidden"
+            data-length={games.length > 6 ? true : false}
             onClick={() => scrollRight(divRef)}
           >
             {'>'}

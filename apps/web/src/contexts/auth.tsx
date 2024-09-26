@@ -33,9 +33,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     await deleteAuthToken();
     await deleteCartItems();
-    setUser({} as IUser);
 
-    router.push('/');
+    setUser({} as IUser);
+    router.replace('/');
 
     setIsLoadingUserData(false);
   }, [router]);

@@ -268,6 +268,7 @@ export const EditorForm = ({ params }: GameParams) => {
               {...register('price')}
               placeholder="Inserir preço de venda"
               type="number"
+              step={0.01}
               id="price"
               disabled={isLoading}
               className="group-data-[error=true]:text-destructive group-data-[error=true]:placeholder:text-destructive"

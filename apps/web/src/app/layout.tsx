@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <body className={`${inter.className} ${inder.variable}`}>
+      <body className={`${inter.className} ${inder.variable}`} suppressHydrationWarning>
         <AuthProvider>
           <CartProvider>
             <Toaster
